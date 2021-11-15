@@ -1,0 +1,10 @@
+{
+  "environment": "development",
+  "mysql": {
+    "user_name": "translator",
+    "password": "translator@124#N",
+    "host": "localhost",
+    "port": 3306,
+    "database": "translation"
+  }
+}
