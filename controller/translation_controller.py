@@ -9,13 +9,18 @@ class TranslationController:
     @inject()
     def __init__(self, mysql_alchemy_session_service):
         self.__mysql_alchemy_session_service = mysql_alchemy_session_service
-        # Container(MySQLSettings.get_settings())
-        # container = Container.get_object_graph()
-        # self.__sql_alchemy_session_service_provider = container.provide(SqlAlchemySessionServiceProvider)
 
-    def getTranslation(self):
-        print("fdsfds")
-        x = self.__mysql_alchemy_session_service.get_session().query(Translation).all()
-        print(x)
-        pass
+    def getTranslation(self, translate_data):
+        translation_dict = translate_data.dict()
+        translation_dict.update({
+            "translated_text": "translated_text",
+            "confidence_score": 4.0,
+            "created_on": 1
+        })
+        translate_obj = Translation(**translation_dict)
+        db_session = self.__mysql_alchemy_session_service.get_session()
+        db_session.add(translate_obj)
+        db_session.flush()
+        # db_session.commit()
+        return translation_dict
 

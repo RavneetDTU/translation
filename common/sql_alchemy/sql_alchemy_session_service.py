@@ -3,7 +3,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import Session, sessionmaker
 
 
-class MysqlAlchemySessionService():
+class MysqlAlchemySessionService:
 
     def __init__(self, config):
         super().__init__()

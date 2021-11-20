@@ -1,22 +1,38 @@
-from fastapi import Depends, FastAPI
+from typing import Optional
+
+from fastapi import FastAPI, Request
+
+from pydantic import BaseModel
 
 from config.config import MySQLSettings
 from common.pinject.container import Container
 from controller.translation_controller import TranslationController
+from common.pinject.sql_alchemy_session_service_provider import SqlAlchemySessionServiceProvider
 
 app = FastAPI()
 
 
-@app.get("/")
-async def root(settings: MySQLSettings = Depends(MySQLSettings.get_settings)):
+class TranslateRequest(BaseModel):
+    input_text: str
+    input_language: Optional[str] = None
+    output_language: str
+
+
+@app.middleware("http")
+async def before_after_requests(request: Request, call_next):
+    response = await call_next(request)
+    # import ipdb; ipdb.set_trace()
+    Container(MySQLSettings.get_settings())
+    container = Container.get_object_graph()
+    ss = container.provide(SqlAlchemySessionServiceProvider)
+    ss.session().commit()
+    return response
+
+
+@app.post("/translate")
+async def translate(translate: TranslateRequest):
     Container(MySQLSettings.get_settings())
     container = Container.get_object_graph()
     translation_controller = container.provide(TranslationController)
-    translation_controller.getTranslation()
-    return settings
-    # return {"message": "Hello World"}
-
-
-@app.get("/items/{item_id}")
-async def read_item(item_id: int):
-    return {"item_id": item_id}
+    res = translation_controller.getTranslation(translate)
+    return res
