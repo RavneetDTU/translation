@@ -12,3 +12,11 @@ class Translation(Base):
     translated_text = Column(Text)
     confidence_score = Column(Float)
     created_on = Column(BigInteger, nullable=False)
+
+
+class TranslationHandler(Base):
+    __tablename__ = "translation_handler"
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    input_language = Column(String(50))
+    output_language = Column(String(50))
+    handler = Column(String(50))

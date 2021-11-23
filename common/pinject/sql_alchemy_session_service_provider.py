@@ -12,3 +12,6 @@ class SqlAlchemySessionServiceProvider:
     def session(self) -> Session:
         return self.__mysql_alchemy_session_service.get_session()
 
+    def connection_string(self):
+        return self.__mysql_alchemy_session_service.connection_string()
+

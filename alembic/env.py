@@ -19,7 +19,7 @@ fileConfig(config.config_file_name)
 Container(MySQLSettings.get_settings())
 container = Container.get_object_graph()
 ss = container.provide(SqlAlchemySessionServiceProvider)
-config.set_main_option("sqlalchemy.url", ss.mysql_alchemy_session_service.connection_string())
+config.set_main_option("sqlalchemy.url", ss.connection_string())
 
 # add your model's MetaData object here
 # for 'autogenerate' support
