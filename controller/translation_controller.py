@@ -4,7 +4,7 @@ from sqlalchemy import and_
 from common.pinject.container import Container
 from config.config import MySQLSettings
 from controller.ai_controller import AIController
-from model.translation import Translation, TranslationHandler
+from model.translation import Translation, TranslationHandler, Suggestion
 
 
 class TranslationController:
@@ -62,3 +62,20 @@ class TranslationController:
         return self.__mysql_alchemy_session_service.get_session().query(TranslationHandler).filter(
             and_(TranslationHandler.input_language == input_language,
                  TranslationHandler.output_language == output_language)).first()
+
+    def add_suggestion(self, suggestion):
+        db_session = self.__mysql_alchemy_session_service.get_session()
+        translation = self.__get_translation_by_id(suggestion.translation_id)
+        if translation is None:
+            return "Invalid Translation id %s" % suggestion.translation_id
+        suggestion_dict = suggestion.dict()
+        suggestion_obj = Suggestion(**suggestion_dict)
+        db_session.add(suggestion_obj)
+        db_session.flush()
+        db_session.commit()
+        return None
+
+    def __get_translation_by_id(self, translation_id: int):
+        translation = self.__mysql_alchemy_session_service.get_session().query(Translation).filter(
+            Translation.id == translation_id).first()
+        return translation

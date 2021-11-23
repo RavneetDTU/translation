@@ -1,4 +1,5 @@
-from sqlalchemy import Column, String, Integer, BigInteger, Text, Float
+from sqlalchemy import Column, String, Integer, BigInteger, Text, Float, ForeignKey
+from sqlalchemy.orm import relationship, backref
 
 from common.sql_alchemy.base import Base
 
@@ -12,6 +13,7 @@ class Translation(Base):
     translated_text = Column(Text)
     confidence_score = Column(Float)
     created_on = Column(BigInteger, nullable=False)
+    suggestion = relationship("Suggestion", backref=backref("translation", cascade="all"))
 
 
 class TranslationHandler(Base):
@@ -20,3 +22,10 @@ class TranslationHandler(Base):
     input_language = Column(String(50))
     output_language = Column(String(50))
     handler = Column(String(50))
+
+
+class Suggestion(Base):
+    __tablename__ = "suggestion"
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    suggested_text = Column(Text)
+    translation_id = Column(Integer, ForeignKey('translation.id'))

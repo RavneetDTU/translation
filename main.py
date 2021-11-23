@@ -1,6 +1,7 @@
+from http import HTTPStatus
 from typing import Optional
 
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request, HTTPException, Response
 
 from pydantic import BaseModel
 
@@ -24,14 +25,14 @@ class TranslateResponse(BaseModel):
     confidence_score: float
 
 
-@app.middleware("http")
-async def before_after_requests(request: Request, call_next):
-    response = await call_next(request)
-    Container(MySQLSettings.get_settings())
-    container = Container.get_object_graph()
-    ss = container.provide(SqlAlchemySessionServiceProvider)
-    ss.session().commit()
-    return response
+# @app.middleware("http")
+# async def before_after_requests(request: Request, call_next):
+#     response = await call_next(request)
+#     Container(MySQLSettings.get_settings())
+#     container = Container.get_object_graph()
+#     ss = container.provide(SqlAlchemySessionServiceProvider)
+#     ss.session().commit()
+#     return response
 
 
 @app.post("/translate", response_model=TranslateResponse)
@@ -41,3 +42,19 @@ async def translate(translate: TranslateRequest):
     translation_controller = container.provide(TranslationController)
     res = translation_controller.get_translation(translate)
     return res
+
+
+class SuggestionRequest(BaseModel):
+    translation_id: int
+    suggested_text: str
+
+
+@app.post("/suggestion", status_code=HTTPStatus.NO_CONTENT)
+async def translate(suggestion: SuggestionRequest):
+    Container(MySQLSettings.get_settings())
+    container = Container.get_object_graph()
+    translation_controller = container.provide(TranslationController)
+    error = translation_controller.add_suggestion(suggestion)
+    if error:
+        raise HTTPException(status_code=400, detail={"message": error})
+    return Response(status_code=HTTPStatus.NO_CONTENT.value)
