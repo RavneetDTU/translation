@@ -17,9 +17,9 @@ class AIController:
     @inject()
     def __init__(self):
         self.ai_strategies = {
-            "translate.english_spanish": self.translate_en_es,
-            "translate.spanish_english": self.translate_es_en,
-            "translate.english_french": self.translate_en_fr,
+            "translate.en_es": self.translate_en_es,
+            "translate.es_en": self.translate_es_en,
+            "translate.en_fr": self.translate_en_fr,
         }
 
     def translate_en_es(self, input_text):
@@ -30,10 +30,8 @@ class AIController:
         return translated_text
 
     def language_detection(self, input_text):
-        languages_dict = {
-            "en": "english"
-        }
-        return languages_dict[detect(input_text)]
+        lang = detect(input_text)
+        return lang
 
     def translate_en_fr(self, input_text):
         output_text = self.en_fr_model.translate(input_text)
