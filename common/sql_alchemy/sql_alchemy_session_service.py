@@ -11,11 +11,11 @@ class MysqlAlchemySessionService:
         self.__Session = None
         self.__engine = None
         db_config = self.__config
-        db_config = (db_config["user_name"],
-                     db_config["password"],
-                     db_config["host"],
-                     db_config["port"],
-                     db_config["database"])
+        db_config = (db_config['mysql'].user_name,
+                     db_config['mysql'].password,
+                     db_config['mysql'].host,
+                     db_config['mysql'].port,
+                     db_config['mysql'].database)
         self.__connection_string = "mysql+mysqlconnector://%s:%s@%s:%d/%s" % db_config
 
     def connection_string(self):

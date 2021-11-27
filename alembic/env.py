@@ -4,7 +4,7 @@ from sqlalchemy import engine_from_config
 from sqlalchemy import pool
 
 from alembic import context
-from config.config import MySQLSettings
+from config.config import Settings
 from common.pinject.container import Container
 from common.pinject.sql_alchemy_session_service_provider import SqlAlchemySessionServiceProvider
 
@@ -16,7 +16,7 @@ config = context.config
 # This line sets up loggers basically.
 fileConfig(config.config_file_name)
 
-Container(MySQLSettings.get_settings())
+Container(Settings.get_settings())
 container = Container.get_object_graph()
 ss = container.provide(SqlAlchemySessionServiceProvider)
 config.set_main_option("sqlalchemy.url", ss.connection_string())
