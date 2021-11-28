@@ -18,6 +18,7 @@ decorator==5.1.0
 defer==1.0.4
 distro==1.4.0
 distro-info==1.0
+ecdsa==0.17.0
 entrypoints==0.3
 fairseq==0.10.2
 fastapi==0.70.0
@@ -57,6 +58,7 @@ omegaconf==2.1.1
 packaging==21.3
 paramiko==2.6.0
 parso==0.8.2
+passlib==1.7.4
 pbr==5.8.0
 pexpect==4.6.0
 pickleshare==0.7.5
@@ -66,6 +68,7 @@ portalocker==2.3.2
 prompt-toolkit==3.0.22
 protobuf==3.6.1
 ptyprocess==0.7.0
+pyasn1==0.4.8
 pycparser==2.21
 pydantic==1.8.2
 Pygments==2.10.0
@@ -76,6 +79,7 @@ pyparsing==3.0.6
 pyRFC3339==1.1
 python-dateutil==2.7.3
 python-debian==0.1.42
+python-jose==3.3.0
 python-multipart==0.0.5
 pytz==2019.3
 pyxdg==0.26
@@ -84,6 +88,7 @@ regex==2021.11.10
 reportlab==3.5.34
 requests==2.22.0
 requests-unixsocket==0.2.0
+rsa==4.8
 sacrebleu==2.0.0
 sacremoses==0.0.46
 SecretStorage==2.3.1
