@@ -56,7 +56,6 @@ async def verify_token(token: str = Depends(oauth2_scheme)):
 @app.post("/translate", response_model=TranslateResponse)
 async def translate(translate: TranslateRequest, user=Depends(verify_token)):
     Container(Settings.get_settings())
-    import ipdb; ipdb.set_trace()
     container = Container.get_object_graph()
     translation_controller = container.provide(TranslationController)
     res = translation_controller.get_translation(translate, user)
