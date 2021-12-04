@@ -53,12 +53,22 @@ async def verify_token(token: str = Depends(oauth2_scheme)):
     return user
 
 
+async def verify_admin(user=Depends(verify_token)):
+    if user["role"] != "admin":
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Unauthorized",
+        )
+    return user
+
 @app.post("/translate", response_model=TranslateResponse)
 async def translate(translate: TranslateRequest, user=Depends(verify_token)):
     Container(Settings.get_settings())
     container = Container.get_object_graph()
     translation_controller = container.provide(TranslationController)
-    res = translation_controller.get_translation(translate, user)
+    res, error = translation_controller.get_translation(translate, user)
+    if error:
+        raise HTTPException(status_code=400, detail={"message": error})
     return res
 
 
@@ -109,3 +119,44 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends()):
     if error:
         raise HTTPException(status_code=401, detail={"message": error})
     return data
+
+
+class TranslatedCharacters(BaseModel):
+    characters_translated: int
+
+
+@app.get("/translated/", response_model=TranslatedCharacters)
+async def translated(start_time: int, end_time: int, admin=Depends(verify_admin)):
+    Container(Settings.get_settings())
+    container = Container.get_object_graph()
+    translation_controller = container.provide(TranslationController)
+    res, error = translation_controller.get_translated_characters_by_time_range(start_time, end_time)
+    if error:
+        raise HTTPException(status_code=400, detail={"message": error})
+    return res
+
+
+@app.get("/translated/{source:str}/{target:str}", response_model=TranslatedCharacters)
+async def translated(source, target, admin=Depends(verify_admin)):
+    Container(Settings.get_settings())
+    container = Container.get_object_graph()
+    translation_controller = container.provide(TranslationController)
+    res, error = translation_controller.get_translated_characters(source, target)
+    if error:
+        raise HTTPException(status_code=400, detail={"message": error})
+    return res
+
+
+class Status(BaseModel):
+    status: str
+
+
+@app.get("/status/{source:str}/{target:str}", response_model=Status)
+async def translated(source, target):
+    Container(Settings.get_settings())
+    container = Container.get_object_graph()
+    translation_controller = container.provide(TranslationController)
+    res, error = translation_controller.get_model_status(source, target)
+    if error:
+        raise HTTPException(status_code=400, detail={"message": error})
+    return res

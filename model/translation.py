@@ -32,3 +32,9 @@ class Suggestion(Base):
     suggested_text = Column(Text, nullable=False)
     translation_id = Column(Integer, ForeignKey('translation.id'), nullable=False)
     user_id = Column(Integer, ForeignKey("user.id", name="fk_suggestion_user_id"), nullable=False)
+
+
+class StatusHelper(Base):
+    __tablename__ = "status_helper"
+    input_language = Column(String(50), primary_key=True)
+    sample_text = Column(Text, nullable=False)

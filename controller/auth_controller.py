@@ -63,7 +63,7 @@ class AuthController:
         payload = {
             "sub": data.email,
             "iat": datetime.datetime.utcnow(),
-            "exp": datetime.datetime.utcnow() + datetime.timedelta(days=0, minutes=self.__config.jwt.access_token_expire_minutes)
+            "exp": datetime.datetime.utcnow() + datetime.timedelta(days=self.__config.jwt.access_token_expire_days)
         }
         encoded_jwt = jwt.encode(payload, self.__config.jwt.secret_key, algorithm=self.__config.jwt.algorithm)
         return encoded_jwt

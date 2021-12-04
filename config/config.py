@@ -10,7 +10,6 @@ class MySQLSettings(BaseSettings):
     port: int = 3306
     database: str = "translation"
 
-
     @staticmethod
     @lru_cache()
     def get_settings():
@@ -20,7 +19,7 @@ class MySQLSettings(BaseSettings):
 class JWTSettings(BaseSettings):
     secret_key: str = "d3a7f94bc015829ed9bb2b6634cb0637e5e3988591107b664185bff5efd40200"
     algorithm: str = "HS256"
-    access_token_expire_minutes: int = 1
+    access_token_expire_days: int = 30
 
     @staticmethod
     @lru_cache()
