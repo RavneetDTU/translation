@@ -1,5 +1,7 @@
 venv
-**/__pycache__
+*/__pycache__
 .idea
 *.pyc
-model/__pycache__/
+model/__pycache__
+config/__pycache__
+alembic/__pycache__
