@@ -1,12 +1,13 @@
 from http import HTTPStatus
 from typing import Optional
 
-from fastapi import FastAPI, Depends, HTTPException, Response, requests, status
+from fastapi import FastAPI, Depends, HTTPException, Response, requests, status, Request
 
 from pydantic import BaseModel
 
-from config.config import MySQLSettings, Settings
+from config.config import Settings
 from common.pinject.container import Container
+from common.pinject.sql_alchemy_session_service_provider import SqlAlchemySessionServiceProvider
 from controller.translation_controller import TranslationController
 from controller.auth_controller import AuthController
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
@@ -29,14 +30,17 @@ class TranslateResponse(BaseModel):
     confidence_score: float
 
 
-# @app.middleware("http")
-# async def before_after_requests(request: Request, call_next):
-#     response = await call_next(request)
-#     Container(MySQLSettings.get_settings())
-#     container = Container.get_object_graph()
-#     ss = container.provide(SqlAlchemySessionServiceProvider)
-#     ss.session().commit()
-#     return response
+@app.middleware("http")
+async def before_after_requests(request: Request, call_next):
+    response = await call_next(request)
+    Container(Settings.get_settings())
+    container = Container.get_object_graph()
+    ss = container.provide(SqlAlchemySessionServiceProvider)
+    error = response.status_code > 299
+    if not error:
+        ss.session().commit()
+    ss.session().close()
+    return response
 
 
 async def verify_token(token: str = Depends(oauth2_scheme)):

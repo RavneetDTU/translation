@@ -1,8 +1,11 @@
 import datetime
+
 from jose import jwt, JWTError
 from passlib.context import CryptContext
 from pinject import inject
 
+from common.pinject.container import Container
+from common.pinject.sql_alchemy_session_service_provider import SqlAlchemySessionServiceProvider
 from config.config import Settings
 from model.auth import User, Role
 
@@ -11,12 +14,14 @@ class AuthController:
     pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
     @inject()
-    def __init__(self, mysql_alchemy_session_service):
-        self.__mysql_alchemy_session_service = mysql_alchemy_session_service
+    def __init__(self):
+        Container(Settings.get_settings())
+        container = Container.get_object_graph()
+        self.__sql_alchemy_session_service_provider = container.provide(SqlAlchemySessionServiceProvider)
         self.__config = Settings.get_settings()
 
     def register_user(self, user_data):
-        db_session = self.__mysql_alchemy_session_service.get_session()
+        db_session = self.__sql_alchemy_session_service_provider.session()
         user_dict = user_data.dict()
         existing_user = self.__get_user_by_email(user_dict["email"])
         if existing_user:
@@ -32,14 +37,13 @@ class AuthController:
         user_obj = User(**user_dict)
         db_session.add(user_obj)
         db_session.flush()
-        db_session.commit()
         return None
 
     def __get_password_hash(self, password):
         return self.pwd_context.hash(password)
 
     def __get_user_by_email(self, email):
-        return self.__mysql_alchemy_session_service.get_session().query(User).filter(User.email == email).first()
+        return self.__sql_alchemy_session_service_provider.session().query(User).filter(User.email == email).first()
 
     def login_user(self, form_data):
         user, error = self.authenticate_user(form_data.username, form_data.password)
