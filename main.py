@@ -1,7 +1,7 @@
 from http import HTTPStatus
 from typing import Optional
 
-from fastapi import FastAPI, Depends, HTTPException, Response, requests, status, Request
+from fastapi import FastAPI, Depends, HTTPException, Response, status, Request
 
 from pydantic import BaseModel
 
@@ -62,15 +62,17 @@ async def verify_admin(user=Depends(verify_token)):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Unauthorized",
+            headers={"WWW-Authenticate": "Basic"},
         )
     return user
 
+
 @app.post("/translate", response_model=TranslateResponse)
-async def translate(translate: TranslateRequest, user=Depends(verify_token)):
+async def translate(translate_data: TranslateRequest, user=Depends(verify_token)):
     Container(Settings.get_settings())
     container = Container.get_object_graph()
     translation_controller = container.provide(TranslationController)
-    res, error = translation_controller.get_translation(translate, user)
+    res, error = translation_controller.get_translation(translate_data, user)
     if error:
         raise HTTPException(status_code=400, detail={"message": error})
     return res
@@ -82,11 +84,11 @@ class SuggestionRequest(BaseModel):
 
 
 @app.post("/suggestion", status_code=HTTPStatus.NO_CONTENT)
-async def suggestion(suggestion: SuggestionRequest, user=Depends(verify_token)):
+async def suggestion(suggestion_data: SuggestionRequest, user=Depends(verify_token)):
     Container(Settings.get_settings())
     container = Container.get_object_graph()
     translation_controller = container.provide(TranslationController)
-    error = translation_controller.add_suggestion(suggestion, user)
+    error = translation_controller.add_suggestion(suggestion_data, user)
     if error:
         raise HTTPException(status_code=400, detail={"message": error})
     return Response(status_code=HTTPStatus.NO_CONTENT.value)
@@ -99,7 +101,7 @@ class User(BaseModel):
 
 
 @app.post("/register", status_code=HTTPStatus.NO_CONTENT)
-async def login(user: User):
+async def register(user: User):
     Container(Settings.get_settings())
     container = Container.get_object_graph()
     auth_controller = container.provide(AuthController)
@@ -129,23 +131,23 @@ class TranslatedCharacters(BaseModel):
     characters_translated: int
 
 
-@app.get("/translated/", response_model=TranslatedCharacters)
-async def translated(start_time: int, end_time: int, admin=Depends(verify_admin)):
+@app.get("/translated/{user_id:int}", response_model=TranslatedCharacters)
+async def translated(user_id: int, start_time: int, end_time: int, admin=Depends(verify_admin)):
     Container(Settings.get_settings())
     container = Container.get_object_graph()
     translation_controller = container.provide(TranslationController)
-    res, error = translation_controller.get_translated_characters_by_time_range(start_time, end_time)
+    res, error = translation_controller.get_translated_characters_by_user_id(user_id, start_time, end_time)
     if error:
         raise HTTPException(status_code=400, detail={"message": error})
     return res
 
 
-@app.get("/translated/{source:str}/{target:str}", response_model=TranslatedCharacters)
-async def translated(source, target, admin=Depends(verify_admin)):
+@app.get("/translated/{source:str}/{target:str}/", response_model=TranslatedCharacters)
+async def translated(source, target, start_time: int, end_time: int, admin=Depends(verify_admin)):
     Container(Settings.get_settings())
     container = Container.get_object_graph()
     translation_controller = container.provide(TranslationController)
-    res, error = translation_controller.get_translated_characters(source, target)
+    res, error = translation_controller.get_translated_characters_by_input_output_language(source, target, start_time, end_time)
     if error:
         raise HTTPException(status_code=400, detail={"message": error})
     return res
@@ -156,7 +158,7 @@ class Status(BaseModel):
 
 
 @app.get("/status/{source:str}/{target:str}", response_model=Status)
-async def translated(source, target):
+async def status(source, target):
     Container(Settings.get_settings())
     container = Container.get_object_graph()
     translation_controller = container.provide(TranslationController)
