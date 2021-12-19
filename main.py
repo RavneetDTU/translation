@@ -50,9 +50,8 @@ async def verify_token(token: str = Depends(oauth2_scheme)):
     user, error = auth_controller.verify_token(token)
     if error:
         raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail=error,
-            headers={"WWW-Authenticate": "Bearer"},
+            status_code=401,
+            detail=error
         )
     return user
 
@@ -60,9 +59,8 @@ async def verify_token(token: str = Depends(oauth2_scheme)):
 async def verify_admin(user=Depends(verify_token)):
     if user["role"] != "admin":
         raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Unauthorized",
-            headers={"WWW-Authenticate": "Basic"},
+            status_code=401,
+            detail="Unauthorized"
         )
     return user
 

@@ -81,7 +81,7 @@ class AuthController:
             user = self.__get_user_by_email(username)
             return User.get_user_data(user), None
         except JWTError as e:
-            return None, e.args[0]
+            return None, e.args[0].args[0]
 
     def get_user_by_user_id(self, user_id):
         return self.__sql_alchemy_session_service_provider.session().query(User).filter(User.id == user_id).first()
