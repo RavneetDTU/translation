@@ -27,6 +27,8 @@ class AIController:
     ru_en_model = TransformerModel.from_pretrained(f'{AI_MODELS_PATH}/tmn_ru_en', checkpoint_file='ru_en.pt', source_lang='ru', target_lang='en')
     pt_en_model = AutoModelForSeq2SeqLM.from_pretrained(f'{AI_MODELS_PATH}/tmn_pt_en')
     en_pt_model = AutoModelForSeq2SeqLM.from_pretrained(f'{AI_MODELS_PATH}/tmn_en_pt')
+    en_de_model = TransformerModel.from_pretrained(f'{AI_MODELS_PATH}/tmn_en_de', checkpoint_file='en_de.pt', source_lang='en', target_lang='de')
+    de_en_model = TransformerModel.from_pretrained(f'{AI_MODELS_PATH}/tmn_de_en', checkpoint_file='de_en.pt', source_lang='de', target_lang='en')
 
     @inject()
     def __init__(self):
@@ -49,6 +51,8 @@ class AIController:
             "translate.en_ru": self.translate_en_ru,
             "translate.en_pt": self.translate_en_pt,
             "translate.pt_en": self.translate_pt_en,
+            "translate.en_de": self.translate_en_de,
+            "translate.de_en": self.translate_de_en,
         }
 
     def translate_en_es(self, input_text):
@@ -170,4 +174,12 @@ class AIController:
         input_ids = tokenizer.encode(('>>por<<'+input_text), return_tensors="pt")
         output_decoded = self.pt_en_model.generate(input_ids)
         output_text = tokenizer.decode(output_decoded[0], skip_special_tokens=True)
+        return output_text
+
+    def translate_de_en(self, input_text):
+        output_text = self.de_en_model.translate(input_text)
+        return output_text
+
+    def translate_en_de(self, input_text):
+        output_text = self.en_de_model.translate(input_text)
         return output_text
