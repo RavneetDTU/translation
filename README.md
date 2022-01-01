@@ -8,14 +8,13 @@ Install MySQL
 pip install -r requirements.txt
 
 # Create database:
-CREATE DATABASE translation;
+1. CREATE DATABASE translation;
 
-CREATE USER 'translator'@'localhost' IDENTIFIED BY 'translator@123';
+2. CREATE USER 'translator'@'localhost' IDENTIFIED BY 'translator@123';
 
-GRANT ALL PRIVILEGES ON translation.* TO 'translator'@'localhost';
+3. GRANT ALL PRIVILEGES ON translation.* TO 'translator'@'localhost';
 
-
-alembic upgrade head # this is to create tables and static data
+4. alembic upgrade head (this is to create tables and static data)
 
 # Start Project using below command
 uvicorn main:app --reload
