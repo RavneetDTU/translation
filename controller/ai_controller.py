@@ -23,12 +23,12 @@ class AIController:
     en_it_model = AutoModelForSeq2SeqLM.from_pretrained(f'{AI_MODELS_PATH}/tmn_en_it')
     ja_en_model = AutoModelForSeq2SeqLM.from_pretrained(f'{AI_MODELS_PATH}/tmn_ja_en')
     en_ja_model = AutoModelForSeq2SeqLM.from_pretrained(f'{AI_MODELS_PATH}/tmn_en_ja')
-    en_ru_model = TransformerModel.from_pretrained(f'{AI_MODELS_PATH}/tmn_en_ru', checkpoint_file='en_ru.pt', source_lang='en', target_lang='ru',tokenizer = 'moses', bpe = 'fastbpe', bpe_codes = f'{AI_MODELS_PATH}/tmn_en_ru/bpecodes')
-    ru_en_model = TransformerModel.from_pretrained(f'{AI_MODELS_PATH}/tmn_ru_en', checkpoint_file='ru_en.pt', source_lang='ru', target_lang='en',tokenizer = 'moses', bpe = 'fastbpe', bpe_codes = f'{AI_MODELS_PATH}/tmn_ru_en/bpecodes')
+    en_ru_model = TransformerModel.from_pretrained(f'{AI_MODELS_PATH}/tmn_en_ru', checkpoint_file='en_ru.pt', source_lang='en', target_lang='ru',tokenizer = 'moses')
+    ru_en_model = TransformerModel.from_pretrained(f'{AI_MODELS_PATH}/tmn_ru_en', checkpoint_file='ru_en.pt', source_lang='ru', target_lang='en',tokenizer = 'moses')
     pt_en_model = AutoModelForSeq2SeqLM.from_pretrained(f'{AI_MODELS_PATH}/tmn_pt_en')
     en_pt_model = AutoModelForSeq2SeqLM.from_pretrained(f'{AI_MODELS_PATH}/tmn_en_pt')
     en_de_model = TransformerModel.from_pretrained(f'{AI_MODELS_PATH}/tmn_en_de', checkpoint_file='en_de.pt', source_lang='en', target_lang='de',tokenizer = 'moses', bpe = 'subword_nmt', bpe_codes = f'{AI_MODELS_PATH}/tmn_en_de/bpecodes')
-    de_en_model = TransformerModel.from_pretrained(f'{AI_MODELS_PATH}/tmn_de_en', checkpoint_file='de_en.pt', source_lang='de', target_lang='en',tokenizer = 'moses', bpe = 'fastbpe', bpe_codes = f'{AI_MODELS_PATH}/tmn_de_en/bpe_codes')
+    de_en_model = TransformerModel.from_pretrained(f'{AI_MODELS_PATH}/tmn_de_en', checkpoint_file='de_en.pt', source_lang='de', target_lang='en',tokenizer = 'moses')
 
     @inject()
     def __init__(self):
