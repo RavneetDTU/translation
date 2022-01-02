@@ -17,7 +17,7 @@ depends_on = None
 
 
 def upgrade():
-    op.execute("""INSERT INTO translation_handler (input_language, output_language, handler) VALUES ('en', 'zu', 'translate.en_es');""")
+    op.execute("""INSERT INTO translation_handler (input_language, output_language, handler) VALUES ('en', 'zu', 'translate.en_zu');""")
 
 
 def downgrade():

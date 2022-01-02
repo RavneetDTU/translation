@@ -5,3 +5,4 @@ venv
 model/__pycache__
 config/__pycache__
 alembic/__pycache__
+ai_models/
