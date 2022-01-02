@@ -23,6 +23,6 @@ def upgrade():
 
 
 def downgrade():
-    op.execute("""DELETE FROM language_helper where input_language='en';""")
-    op.execute("""DELETE FROM language_helper where input_language='fr';""")
-    op.execute("""DELETE FROM language_helper where input_language='es';""")
+    op.execute("""DELETE FROM language_helper where language='en';""")
+    op.execute("""DELETE FROM language_helper where language='fr';""")
+    op.execute("""DELETE FROM language_helper where language='es';""")
