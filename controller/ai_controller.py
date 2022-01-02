@@ -10,7 +10,7 @@ AI_MODELS_PATH = os.path.abspath(os.path.join(os.getcwd(), "ai_models"))
 
 class AIController:
     en_es_model = AutoModelForSeq2SeqLM.from_pretrained(f'{AI_MODELS_PATH}/tmn_en_es')
-    en_fr_model = TransformerModel.from_pretrained(f'{AI_MODELS_PATH}/tmn_en_fr', checkpoint_file='model.pt', source_lang='en', target_lang='fr')
+    en_fr_model = TransformerModel.from_pretrained(f'{AI_MODELS_PATH}/tmn_en_fr', checkpoint_file='model.pt', source_lang='en', target_lang='fr', bpe = 'subword_nmt', bpe_codes = f'{AI_MODELS_PATH}/tmn_en_fr/bpecodes')
     es_en_model = AutoModelForSeq2SeqLM.from_pretrained(f'{AI_MODELS_PATH}/tmn_es_en')
     fr_en_model = AutoModelForSeq2SeqLM.from_pretrained(f'{AI_MODELS_PATH}/tmn_fr_en')
     en_zu_model = AutoModelForSeq2SeqLM.from_pretrained(f'{AI_MODELS_PATH}/tmn_en_zu')
@@ -23,12 +23,12 @@ class AIController:
     en_it_model = AutoModelForSeq2SeqLM.from_pretrained(f'{AI_MODELS_PATH}/tmn_en_it')
     ja_en_model = AutoModelForSeq2SeqLM.from_pretrained(f'{AI_MODELS_PATH}/tmn_ja_en')
     en_ja_model = AutoModelForSeq2SeqLM.from_pretrained(f'{AI_MODELS_PATH}/tmn_en_ja')
-    en_ru_model = TransformerModel.from_pretrained(f'{AI_MODELS_PATH}/tmn_en_ru', checkpoint_file='en_ru.pt', source_lang='en', target_lang='ru')
-    ru_en_model = TransformerModel.from_pretrained(f'{AI_MODELS_PATH}/tmn_ru_en', checkpoint_file='ru_en.pt', source_lang='ru', target_lang='en')
+    en_ru_model = TransformerModel.from_pretrained(f'{AI_MODELS_PATH}/tmn_en_ru', checkpoint_file='en_ru.pt', source_lang='en', target_lang='ru',tokenizer = 'moses', bpe = 'fastbpe', bpe_codes = f'{AI_MODELS_PATH}/tmn_en_ru/bpecodes')
+    ru_en_model = TransformerModel.from_pretrained(f'{AI_MODELS_PATH}/tmn_ru_en', checkpoint_file='ru_en.pt', source_lang='ru', target_lang='en',tokenizer = 'moses', bpe = 'fastbpe', bpe_codes = f'{AI_MODELS_PATH}/tmn_ru_en/bpecodes')
     pt_en_model = AutoModelForSeq2SeqLM.from_pretrained(f'{AI_MODELS_PATH}/tmn_pt_en')
     en_pt_model = AutoModelForSeq2SeqLM.from_pretrained(f'{AI_MODELS_PATH}/tmn_en_pt')
-    en_de_model = TransformerModel.from_pretrained(f'{AI_MODELS_PATH}/tmn_en_de', checkpoint_file='en_de.pt', source_lang='en', target_lang='de')
-    de_en_model = TransformerModel.from_pretrained(f'{AI_MODELS_PATH}/tmn_de_en', checkpoint_file='de_en.pt', source_lang='de', target_lang='en')
+    en_de_model = TransformerModel.from_pretrained(f'{AI_MODELS_PATH}/tmn_en_de', checkpoint_file='en_de.pt', source_lang='en', target_lang='de',tokenizer = 'moses', bpe = 'subword_nmt', bpe_codes = f'{AI_MODELS_PATH}/tmn_en_de/bpecodes')
+    de_en_model = TransformerModel.from_pretrained(f'{AI_MODELS_PATH}/tmn_de_en', checkpoint_file='de_en.pt', source_lang='de', target_lang='en',tokenizer = 'moses', bpe = 'fastbpe', bpe_codes = f'{AI_MODELS_PATH}/tmn_de_en/bpe_codes')
 
     @inject()
     def __init__(self):
@@ -67,8 +67,9 @@ class AIController:
         return lang
 
     def translate_en_fr(self, input_text):
-        output_text = self.en_fr_model.translate(input_text)
-        return output_text
+        model_output = self.en_fr_model.translate(input_text)
+        translated_output = (model_output+"").replace(" @-@ ","-").rstrip()
+        return translated_output
 
     def translate_es_en(self, input_text):
         tokenizer = AutoTokenizer.from_pretrained(f'{AI_MODELS_PATH}/tmn_es_en')
