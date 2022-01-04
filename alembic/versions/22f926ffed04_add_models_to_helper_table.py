@@ -17,9 +17,6 @@ depends_on = None
 
 
 def upgrade():
-    op.execute("""INSERT INTO language_helper (language, sample_text) VALUES ('en', 'This is a test');""")
-    op.execute("""INSERT INTO language_helper (language, sample_text) VALUES ('fr', 'これはテストです。');""")
-    op.execute("""INSERT INTO language_helper (language, sample_text) VALUES ('es', 'C'est un test.');""")
     op.execute("""INSERT INTO language_helper (language, sample_text) VALUES ('pt', 'Isto é um teste.');""")
     op.execute("""INSERT INTO language_helper (language, sample_text) VALUES ('de', 'Das ist ein Test.');""")
     op.execute("""INSERT INTO language_helper (language, sample_text) VALUES ('ru', 'Это тест.');""")
@@ -31,9 +28,6 @@ def upgrade():
 
 
 def downgrade():
-    op.execute("""DELETE FROM language_helper where language='en';""")
-    op.execute("""DELETE FROM language_helper where language='fr';""")
-    op.execute("""DELETE FROM language_helper where language='es';""")
     op.execute("""DELETE FROM language_helper where language='pt';""")
     op.execute("""DELETE FROM language_helper where language='de';""")
     op.execute("""DELETE FROM language_helper where language='ru';""")
