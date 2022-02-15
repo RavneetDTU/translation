@@ -9,9 +9,9 @@ AI_MODELS_PATH = os.path.abspath(os.path.join(os.getcwd(), "ai_models"))
 
 
 class AIController:
-    en_es_model = AutoModelForSeq2SeqLM.from_pretrained(f'{AI_MODELS_PATH}/tmn_en_es')
+    en_es_model = AutoModelForSeq2SeqLM.from_pretrained(f'{AI_MODELS_PATH}/tmn_en_zu')
     en_fr_model = TransformerModel.from_pretrained(f'{AI_MODELS_PATH}/tmn_en_fr_v2', checkpoint_file='en_fr_v2.pt', source_lang='en', target_lang='fr', bpe = 'subword_nmt', bpe_codes = f'{AI_MODELS_PATH}/tmn_en_fr_v2/bpecodes_v2')
-    es_en_model = AutoModelForSeq2SeqLM.from_pretrained(f'{AI_MODELS_PATH}/tmn_es_en')
+    es_en_model = AutoModelForSeq2SeqLM.from_pretrained(f'{AI_MODELS_PATH}/tmn_zu_en')
     fr_en_model = AutoModelForSeq2SeqLM.from_pretrained(f'{AI_MODELS_PATH}/tmn_fr_en')
     en_zu_model = AutoModelForSeq2SeqLM.from_pretrained(f'{AI_MODELS_PATH}/tmn_en_zu')
     zu_en_model = AutoModelForSeq2SeqLM.from_pretrained(f'{AI_MODELS_PATH}/tmn_zu_en')
@@ -56,26 +56,34 @@ class AIController:
         }
 
     def translate_en_es(self, input_text):
-        tokenizer = AutoTokenizer.from_pretrained(f'{AI_MODELS_PATH}/tmn_en_es')
-        input_ids = tokenizer.encode((input_text), return_tensors="pt")
-        output_decoded = self.en_es_model.generate(input_ids)
+        tokenizer = AutoTokenizer.from_pretrained(f'{AI_MODELS_PATH}/tmn_en_zu')
+        input_ids = tokenizer.encode(('>>zul<<'+input_text), return_tensors="pt")
+        output_decoded = self.en_zu_model.generate(input_ids)
         translated_text = tokenizer.decode(output_decoded[0], skip_special_tokens=True)
+        print("English -> Spanish Model working.")
+        print("Jugard also working")
+        print("English -> Zulu Model working.")
         return translated_text
 
     def language_detection(self, input_text):
         lang = detect(input_text)
+        print("Detected language is ", lang)
         return lang
 
     def translate_en_fr(self, input_text):
         model_output = self.en_fr_model.translate(input_text)
         translated_output = (model_output+"").replace(" @-@ ","-").rstrip()
+        print("English -> French Model working.")
         return translated_output
 
     def translate_es_en(self, input_text):
-        tokenizer = AutoTokenizer.from_pretrained(f'{AI_MODELS_PATH}/tmn_es_en')
-        input_ids = tokenizer.encode((input_text), return_tensors="pt")
-        output_decoded = self.es_en_model.generate(input_ids)
+        tokenizer = AutoTokenizer.from_pretrained(f'{AI_MODELS_PATH}/tmn_zu_en')
+        input_ids = tokenizer.encode(('>>zul<<'+input_text), return_tensors="pt")
+        output_decoded = self.zu_en_model.generate(input_ids)
         output_text = tokenizer.decode(output_decoded[0], skip_special_tokens=True)
+        print("Spanish -> English Model working.")
+        print("Jugard also working")
+        print("Zulu -> English Model working.")
         return output_text
 
     def translate_fr_en(self, input_text):
@@ -83,6 +91,7 @@ class AIController:
         input_ids = tokenizer.encode((input_text), return_tensors="pt")
         output_decoded = self.fr_en_model.generate(input_ids)
         output_text = tokenizer.decode(output_decoded[0], skip_special_tokens=True)
+        print("French -> English Model working.")
         return output_text
 
     def translate_zu_en(self, input_text):
@@ -90,6 +99,7 @@ class AIController:
         input_ids = tokenizer.encode(('>>zul<<'+input_text), return_tensors="pt")
         output_decoded = self.zu_en_model.generate(input_ids)
         output_text = tokenizer.decode(output_decoded[0], skip_special_tokens=True)
+        print("Zulu -> English Model working.")
         return output_text
 
     def translate_en_zu(self, input_text):
@@ -97,6 +107,7 @@ class AIController:
         input_ids = tokenizer.encode(('>>zul<<'+input_text), return_tensors="pt")
         output_decoded = self.en_zu_model.generate(input_ids)
         output_text = tokenizer.decode(output_decoded[0], skip_special_tokens=True)
+        print("English -> Zulu Model working.")
         return output_text
 
     def translate_en_id(self, input_text):
@@ -104,6 +115,7 @@ class AIController:
         input_ids = tokenizer.encode((input_text), return_tensors="pt")
         output_decoded = self.en_id_model.generate(input_ids)
         output_text = tokenizer.decode(output_decoded[0], skip_special_tokens=True)
+        print("English -> Indonesian Model working.")
         return output_text
 
     def translate_id_en(self, input_text):
@@ -111,6 +123,7 @@ class AIController:
         input_ids = tokenizer.encode((input_text), return_tensors="pt")
         output_decoded = self.id_en_model.generate(input_ids)
         output_text = tokenizer.decode(output_decoded[0], skip_special_tokens=True)
+        print("Indonesian -> English Model working.")
         return output_text
 
     def translate_nl_en(self, input_text):
@@ -118,6 +131,7 @@ class AIController:
         input_ids = tokenizer.encode((input_text), return_tensors="pt")
         output_decoded = self.nl_en_model.generate(input_ids)
         output_text = tokenizer.decode(output_decoded[0], skip_special_tokens=True)
+        print("Dutch -> English Model working.")
         return output_text
 
     def translate_en_nl(self, input_text):
@@ -125,6 +139,7 @@ class AIController:
         input_ids = tokenizer.encode((input_text), return_tensors="pt")
         output_decoded = self.en_nl_model.generate(input_ids)
         output_text = tokenizer.decode(output_decoded[0], skip_special_tokens=True)
+        print("English -> Dutch Model working.")
         return output_text
 
     def translate_en_it(self, input_text):
@@ -132,6 +147,7 @@ class AIController:
         input_ids = tokenizer.encode((input_text), return_tensors="pt")
         output_decoded = self.en_it_model.generate(input_ids)
         output_text = tokenizer.decode(output_decoded[0], skip_special_tokens=True)
+        print("English -> Italian Model working.")
         return output_text
 
     def translate_it_en(self, input_text):
@@ -139,6 +155,7 @@ class AIController:
         input_ids = tokenizer.encode((input_text), return_tensors="pt")
         output_decoded = self.it_en_model.generate(input_ids)
         output_text = tokenizer.decode(output_decoded[0], skip_special_tokens=True)
+        print("Italian -> English Model working.")
         return output_text
 
     def translate_ja_en(self, input_text):
@@ -146,6 +163,7 @@ class AIController:
         input_ids = tokenizer.encode((input_text), return_tensors="pt")
         output_decoded = self.ja_en_model.generate(input_ids)
         output_text = tokenizer.decode(output_decoded[0], skip_special_tokens=True)
+        print("Japnese -> English Model working.")
         return output_text
 
     def translate_en_ja(self, input_text):
@@ -153,14 +171,17 @@ class AIController:
         input_ids = tokenizer.encode((input_text), return_tensors="pt")
         output_decoded = self.en_ja_model.generate(input_ids)
         output_text = tokenizer.decode(output_decoded[0], skip_special_tokens=True)
+        print("English -> Japnese Model working.")
         return output_text
 
     def translate_en_ru(self, input_text):
         output_text = self.en_ru_model.translate(input_text)
+        print("English -> Russian Model working.")
         return output_text
 
     def translate_ru_en(self, input_text):
         output_text = self.ru_en_model.translate(input_text)
+        print("Russian -> English Model working.")
         return output_text
 
     def translate_en_pt(self, input_text):
@@ -168,6 +189,7 @@ class AIController:
         input_ids = tokenizer.encode(('>>por<<'+input_text), return_tensors="pt")
         output_decoded = self.en_pt_model.generate(input_ids)
         output_text = tokenizer.decode(output_decoded[0], skip_special_tokens=True)
+        print("English -> Portuguese Model working.")
         return output_text
 
     def translate_pt_en(self, input_text):
@@ -175,12 +197,15 @@ class AIController:
         input_ids = tokenizer.encode(('>>por<<'+input_text), return_tensors="pt")
         output_decoded = self.pt_en_model.generate(input_ids)
         output_text = tokenizer.decode(output_decoded[0], skip_special_tokens=True)
+        print("Portuguese -> English Model working.")
         return output_text
 
     def translate_de_en(self, input_text):
         output_text = self.de_en_model.translate(input_text)
+        print("German -> English Model working.")
         return output_text
 
     def translate_en_de(self, input_text):
         output_text = self.en_de_model.translate(input_text)
+        print("English -> German Model working.")
         return output_text
