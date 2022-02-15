@@ -4,6 +4,7 @@ from fairseq.models.transformer import TransformerModel
 from langdetect import detect
 from pinject import inject
 from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
+from transformers import FSMTForConditionalGeneration, FSMTTokenizer
 
 AI_MODELS_PATH = os.path.abspath(os.path.join(os.getcwd(), "ai_models"))
 
@@ -23,12 +24,12 @@ class AIController:
     en_it_model = AutoModelForSeq2SeqLM.from_pretrained(f'{AI_MODELS_PATH}/tmn_en_it')
     ja_en_model = AutoModelForSeq2SeqLM.from_pretrained(f'{AI_MODELS_PATH}/tmn_ja_en')
     en_ja_model = AutoModelForSeq2SeqLM.from_pretrained(f'{AI_MODELS_PATH}/tmn_en_ja')
-    en_ru_model = TransformerModel.from_pretrained(f'{AI_MODELS_PATH}/tmn_en_ru', checkpoint_file='en_ru.pt', source_lang='en', target_lang='ru',tokenizer = 'moses')
-    ru_en_model = TransformerModel.from_pretrained(f'{AI_MODELS_PATH}/tmn_ru_en', checkpoint_file='ru_en.pt', source_lang='ru', target_lang='en',tokenizer = 'moses')
+    en_ru_model = FSMTForConditionalGeneration.from_pretrained(f'{AI_MODELS_PATH}/tmn_en_ru')
+    ru_en_model = FSMTForConditionalGeneration.from_pretrained(f'{AI_MODELS_PATH}/tmn_ru_en')
     pt_en_model = AutoModelForSeq2SeqLM.from_pretrained(f'{AI_MODELS_PATH}/tmn_pt_en')
     en_pt_model = AutoModelForSeq2SeqLM.from_pretrained(f'{AI_MODELS_PATH}/tmn_en_pt')
-    en_de_model = TransformerModel.from_pretrained(f'{AI_MODELS_PATH}/tmn_en_de', checkpoint_file='en_de.pt', source_lang='en', target_lang='de',tokenizer = 'moses', bpe = 'subword_nmt', bpe_codes = f'{AI_MODELS_PATH}/tmn_en_de/bpecodes')
-    de_en_model = TransformerModel.from_pretrained(f'{AI_MODELS_PATH}/tmn_de_en', checkpoint_file='de_en.pt', source_lang='de', target_lang='en',tokenizer = 'moses')
+    en_de_model = FSMTForConditionalGeneration.from_pretrained(f'{AI_MODELS_PATH}/tmn_en_de')
+    de_en_model = FSMTForConditionalGeneration.from_pretrained(f'{AI_MODELS_PATH}/tmn_de_en')
 
     @inject()
     def __init__(self):
@@ -175,12 +176,18 @@ class AIController:
         return output_text
 
     def translate_en_ru(self, input_text):
-        output_text = self.en_ru_model.translate(input_text)
+        tokenizer = FSMTTokenizer.from_pretrained(f'{AI_MODELS_PATH}/tmn_en_ru')
+        input_ids = tokenizer.encode((input_text), return_tensors="pt")
+        output_decoded = self.en_ru_model.generate(input_ids)
+        output_text = tokenizer.decode(output_decoded[0], skip_special_tokens=True)
         print("English -> Russian Model working.")
         return output_text
 
     def translate_ru_en(self, input_text):
-        output_text = self.ru_en_model.translate(input_text)
+        tokenizer = FSMTTokenizer.from_pretrained(f'{AI_MODELS_PATH}/tmn_ru_en')
+        input_ids = tokenizer.encode((input_text), return_tensors="pt")
+        output_decoded = self.ru_en_model.generate(input_ids)
+        output_text = tokenizer.decode(output_decoded[0], skip_special_tokens=True)
         print("Russian -> English Model working.")
         return output_text
 
@@ -201,11 +208,17 @@ class AIController:
         return output_text
 
     def translate_de_en(self, input_text):
-        output_text = self.de_en_model.translate(input_text)
+        tokenizer = FSMTTokenizer.from_pretrained(f'{AI_MODELS_PATH}/tmn_de_en')
+        input_ids = tokenizer.encode((input_text), return_tensors="pt")
+        output_decoded = self.de_en_model.generate(input_ids)
+        output_text = tokenizer.decode(output_decoded[0], skip_special_tokens=True)
         print("German -> English Model working.")
         return output_text
 
     def translate_en_de(self, input_text):
-        output_text = self.en_de_model.translate(input_text)
+        tokenizer = FSMTTokenizer.from_pretrained(f'{AI_MODELS_PATH}/tmn_en_de')
+        input_ids = tokenizer.encode((input_text), return_tensors="pt")
+        output_decoded = self.en_de_model.generate(input_ids)
+        output_text = tokenizer.decode(output_decoded[0], skip_special_tokens=True)
         print("English -> German Model working.")
         return output_text
