@@ -87,14 +87,14 @@ class AIController:
 
     def translate_zu_en(self, input_text):
         tokenizer = AutoTokenizer.from_pretrained(f'{AI_MODELS_PATH}/tmn_zu_en')
-        input_ids = tokenizer.encode((input_text), return_tensors="pt")
+        input_ids = tokenizer.encode(('>>zul<<'+input_text), return_tensors="pt")
         output_decoded = self.zu_en_model.generate(input_ids)
         output_text = tokenizer.decode(output_decoded[0], skip_special_tokens=True)
         return output_text
 
     def translate_en_zu(self, input_text):
         tokenizer = AutoTokenizer.from_pretrained(f'{AI_MODELS_PATH}/tmn_en_zu')
-        input_ids = tokenizer.encode((input_text), return_tensors="pt")
+        input_ids = tokenizer.encode(('>>zul<<'+input_text), return_tensors="pt")
         output_decoded = self.en_zu_model.generate(input_ids)
         output_text = tokenizer.decode(output_decoded[0], skip_special_tokens=True)
         return output_text
