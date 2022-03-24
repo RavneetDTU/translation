@@ -30,6 +30,8 @@ class AIController:
     en_pt_model = AutoModelForSeq2SeqLM.from_pretrained(f'{AI_MODELS_PATH}/tmn_en_pt')
     en_de_model = FSMTForConditionalGeneration.from_pretrained(f'{AI_MODELS_PATH}/tmn_en_de')
     de_en_model = FSMTForConditionalGeneration.from_pretrained(f'{AI_MODELS_PATH}/tmn_de_en')
+    af_en_model = FSMTForConditionalGeneration.from_pretrained(f'{AI_MODELS_PATH}/tmn_af_en')
+    en_af_model = FSMTForConditionalGeneration.from_pretrained(f'{AI_MODELS_PATH}/tmn_en_af')
 
     @inject()
     def __init__(self):
@@ -54,6 +56,8 @@ class AIController:
             "translate.pt_en": self.translate_pt_en,
             "translate.en_de": self.translate_en_de,
             "translate.de_en": self.translate_de_en,
+            "translate.af_en": self.translate_af_en,
+            "translate.en_af": self.translate_en_af,
         }
 
     def translate_en_es(self, input_text):
@@ -221,4 +225,19 @@ class AIController:
         output_decoded = self.en_de_model.generate(input_ids)
         output_text = tokenizer.decode(output_decoded[0], skip_special_tokens=True)
         print("English -> German Model working.")
+        return output_text
+    def translate_en_af(self, input_text):
+        tokenizer = AutoTokenizer.from_pretrained(f'{AI_MODELS_PATH}/tmn_en_af')
+        input_ids = tokenizer.encode((input_text), return_tensors="pt")
+        output_decoded = self.en_af_model.generate(input_ids)
+        output_text = tokenizer.decode(output_decoded[0], skip_special_tokens=True)
+        print("English -> Afrikaans Model working.")
+        return output_text
+
+    def translate_af_en(self, input_text):
+        tokenizer = AutoTokenizer.from_pretrained(f'{AI_MODELS_PATH}/tmn_af_en')
+        input_ids = tokenizer.encode((input_text), return_tensors="pt")
+        output_decoded = self.af_en_model.generate(input_ids)
+        output_text = tokenizer.decode(output_decoded[0], skip_special_tokens=True)
+        print("Afrikaans -> English Model working.")
         return output_text
