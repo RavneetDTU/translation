@@ -30,8 +30,8 @@ class AIController:
     en_pt_model = AutoModelForSeq2SeqLM.from_pretrained(f'{AI_MODELS_PATH}/tmn_en_pt')
     en_de_model = FSMTForConditionalGeneration.from_pretrained(f'{AI_MODELS_PATH}/tmn_en_de')
     de_en_model = FSMTForConditionalGeneration.from_pretrained(f'{AI_MODELS_PATH}/tmn_de_en')
-    af_en_model = FSMTForConditionalGeneration.from_pretrained(f'{AI_MODELS_PATH}/tmn_af_en')
-    en_af_model = FSMTForConditionalGeneration.from_pretrained(f'{AI_MODELS_PATH}/tmn_en_af')
+    af_en_model = AutoModelForSeq2SeqLM.from_pretrained(f'{AI_MODELS_PATH}/tmn_af_en')
+    en_af_model = AutoModelForSeq2SeqLM.from_pretrained(f'{AI_MODELS_PATH}/tmn_en_af')
 
     @inject()
     def __init__(self):
