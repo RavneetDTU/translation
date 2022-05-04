@@ -5,8 +5,15 @@ from langdetect import detect
 from pinject import inject
 from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
 from transformers import FSMTForConditionalGeneration, FSMTTokenizer
+import html
+
+import requests
+url = 'http://169.255.36.95:5000/translate'
 
 AI_MODELS_PATH = os.path.abspath(os.path.join(os.getcwd(), "ai_models"))
+
+# Seprator sets:
+eng_seprator_set = ['?', '!', '.']
 
 
 class AIController:
@@ -76,10 +83,28 @@ class AIController:
         return lang
 
     def translate_en_fr(self, input_text):
-        model_output = self.en_fr_model.translate(input_text)
-        translated_output = (model_output+"").replace(" @-@ ","-").rstrip()
-        print("English -> French Model working.")
-        return translated_output
+
+        sentence_list = []
+
+        starting_range = 0
+        for i in range(len(input_text)):
+            if(input_text[i] in eng_seprator_set):
+                sentence = input_text[starting_range : i+1]
+                sentence_list.append(sentence.strip())
+                starting_range = i+1
+
+        ans = ""
+
+        for i in sentence_list:
+            query = {'source_lang': 'English',
+            'target_lang' : 'French',
+            'input_data': i}
+        result = requests.post(url, params=query)
+        rawJson = result.json()
+        translatedOutput = html.unescape(rawJson['data'])
+        ans = ans+ " " + translatedOutput
+        #print("English -> French Model working.")
+        return ans
 
     def translate_es_en(self, input_text):
         tokenizer = AutoTokenizer.from_pretrained(f'{AI_MODELS_PATH}/tmn_zu_en')
