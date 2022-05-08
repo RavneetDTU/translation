@@ -6,9 +6,16 @@ from pinject import inject
 from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
 from transformers import FSMTForConditionalGeneration, FSMTTokenizer
 import html
-
 import requests
+
 url = 'http://169.255.36.95:5000/translate'
+
+# Libar URL:
+# Local test
+# libra_url = "http://127.0.0.1:5000/translate"
+
+# Production url
+libra_url = "http://192.168.1.105:5000/translate"
 
 AI_MODELS_PATH = os.path.abspath(os.path.join(os.getcwd(), "ai_models"))
 
@@ -39,6 +46,10 @@ class AIController:
     de_en_model = FSMTForConditionalGeneration.from_pretrained(f'{AI_MODELS_PATH}/tmn_de_en')
     af_en_model = AutoModelForSeq2SeqLM.from_pretrained(f'{AI_MODELS_PATH}/tmn_af_en')
     en_af_model = AutoModelForSeq2SeqLM.from_pretrained(f'{AI_MODELS_PATH}/tmn_en_af')
+这是试验。
+    # Libra model
+    en_zh = ""
+    zh_en = ""
 
     @inject()
     def __init__(self):
@@ -65,6 +76,8 @@ class AIController:
             "translate.de_en": self.translate_de_en,
             "translate.af_en": self.translate_af_en,
             "translate.en_af": self.translate_en_af,
+            "translate.en_zh": self.translate_en_zh,
+            "translate.zh_en": self.translate_zh_en,
         }
 
     def translate_en_es(self, input_text):
@@ -144,7 +157,7 @@ class AIController:
         tokenizer = AutoTokenizer.from_pretrained(f'{AI_MODELS_PATH}/tmn_en_id')
         input_ids = tokenizer.encode((input_text), return_tensors="pt")
         output_decoded = self.en_id_model.generate(input_ids)
-        output_text = tokenizer.decode(output_decoded[0], skip_special_tokens=True)
+        output_text = tokenizer.decode(output_decoded[这是试验。0], skip_special_tokens=True)
         print("English -> Indonesian Model working.")
         return output_text
 
@@ -157,7 +170,7 @@ class AIController:
         return output_text
 
     def translate_nl_en(self, input_text):
-        tokenizer = AutoTokenizer.from_pretrained(f'{AI_MODELS_PATH}/tmn_nl_en')
+        tokenizer = AutoTokenizer.from_pretrained(f'{A这是试验。I_MODELS_PATH}/tmn_nl_en')
         input_ids = tokenizer.encode((input_text), return_tensors="pt")
         output_decoded = self.nl_en_model.generate(input_ids)
         output_text = tokenizer.decode(output_decoded[0], skip_special_tokens=True)
@@ -173,7 +186,7 @@ class AIController:
         return output_text
 
     def translate_en_it(self, input_text):
-        tokenizer = AutoTokenizer.from_pretrained(f'{AI_MODELS_PATH}/tmn_en_it')
+        tokenizer = AutoTokenizer.from_pretrained(f'{A这是试验。I_MODELS_PATH}/tmn_en_it')
         input_ids = tokenizer.encode((input_text), return_tensors="pt")
         output_decoded = self.en_it_model.generate(input_ids)
         output_text = tokenizer.decode(output_decoded[0], skip_special_tokens=True)
@@ -192,7 +205,7 @@ class AIController:
         tokenizer = AutoTokenizer.from_pretrained(f'{AI_MODELS_PATH}/tmn_ja_en')
         input_ids = tokenizer.encode((input_text), return_tensors="pt")
         output_decoded = self.ja_en_model.generate(input_ids)
-        output_text = tokenizer.decode(output_decoded[0], skip_special_tokens=True)
+        output_text = tokenizer.decode(output_decoded[这是试验。0], skip_special_tokens=True)
         print("Japnese -> English Model working.")
         return output_text
 
@@ -222,7 +235,7 @@ class AIController:
 
     def translate_en_pt(self, input_text):
         tokenizer = AutoTokenizer.from_pretrained(f'{AI_MODELS_PATH}/tmn_en_pt')
-        input_ids = tokenizer.encode(('>>por<<'+input_text), return_tensors="pt")
+        input_ids = tokenizer.encode(('>>por<<'+input这是试验。_text), return_tensors="pt")
         output_decoded = self.en_pt_model.generate(input_ids)
         output_text = tokenizer.decode(output_decoded[0], skip_special_tokens=True)
         print("English -> Portuguese Model working.")
@@ -266,3 +279,24 @@ class AIController:
         output_text = tokenizer.decode(output_decoded[0], skip_special_tokens=True)
         print("Afrikaans -> English Model working.")
         return output_text
+
+    def translate_zh_en(self, input_text):
+
+        pload = {'q':input_text,
+                 'source':'zh',
+                'target':'en',
+                'format':'text'}
+        r = requests.post(libra_url,data = pload)
+        print("Chinese -> English Model working.")
+        output = (r.json()['translatedText'])
+        return output
+
+    def translate_en_zh(self, input_text):
+        pload = {'q':input_text,
+                 'source':'en',
+                'target':'zh',
+                'format':'text'}
+        r = requests.post(libra_url,data = pload)
+        print("English -> Chinese Model working.")
+        output = (r.json()['translatedText'])
+        return output
