@@ -12,10 +12,10 @@ url = 'http://169.255.36.95:5000/translate'
 
 # Libar URL:
 # Local test
-# libra_url = "http://127.0.0.1:5000/translate"
+libra_url = "http://127.0.0.1:5000/translate"
 
 # Production url
-libra_url = "http://192.168.1.105:5000/translate"
+# libra_url = "http://192.168.1.105:5000/translate"
 
 AI_MODELS_PATH = os.path.abspath(os.path.join(os.getcwd(), "ai_models"))
 
@@ -24,9 +24,9 @@ eng_seprator_set = ['?', '!', '.']
 
 
 class AIController:
-    en_es_model = AutoModelForSeq2SeqLM.from_pretrained(f'{AI_MODELS_PATH}/tmn_en_zu')
+    en_es_model = AutoModelForSeq2SeqLM.from_pretrained(f'{AI_MODELS_PATH}/tmn_en_es')
     en_fr_model = TransformerModel.from_pretrained(f'{AI_MODELS_PATH}/tmn_en_fr_v2', checkpoint_file='en_fr_v2.pt', source_lang='en', target_lang='fr', bpe = 'subword_nmt', bpe_codes = f'{AI_MODELS_PATH}/tmn_en_fr_v2/bpecodes_v2')
-    es_en_model = AutoModelForSeq2SeqLM.from_pretrained(f'{AI_MODELS_PATH}/tmn_zu_en')
+    es_en_model = AutoModelForSeq2SeqLM.from_pretrained(f'{AI_MODELS_PATH}/tmn_es_en')
     fr_en_model = AutoModelForSeq2SeqLM.from_pretrained(f'{AI_MODELS_PATH}/tmn_fr_en')
     en_zu_model = AutoModelForSeq2SeqLM.from_pretrained(f'{AI_MODELS_PATH}/tmn_en_zu')
     zu_en_model = AutoModelForSeq2SeqLM.from_pretrained(f'{AI_MODELS_PATH}/tmn_zu_en')
@@ -46,7 +46,7 @@ class AIController:
     de_en_model = FSMTForConditionalGeneration.from_pretrained(f'{AI_MODELS_PATH}/tmn_de_en')
     af_en_model = AutoModelForSeq2SeqLM.from_pretrained(f'{AI_MODELS_PATH}/tmn_af_en')
     en_af_model = AutoModelForSeq2SeqLM.from_pretrained(f'{AI_MODELS_PATH}/tmn_en_af')
-这是试验。
+
     # Libra model
     en_zh = ""
     zh_en = ""
@@ -81,13 +81,13 @@ class AIController:
         }
 
     def translate_en_es(self, input_text):
-        tokenizer = AutoTokenizer.from_pretrained(f'{AI_MODELS_PATH}/tmn_en_zu')
-        input_ids = tokenizer.encode(('>>zul<<'+input_text), return_tensors="pt")
-        output_decoded = self.en_zu_model.generate(input_ids)
+        tokenizer = AutoTokenizer.from_pretrained(f'{AI_MODELS_PATH}/tmn_en_es')
+        input_ids = tokenizer.encode((input_text), return_tensors="pt")
+        output_decoded = self.en_es_model.generate(input_ids)
         translated_text = tokenizer.decode(output_decoded[0], skip_special_tokens=True)
         print("English -> Spanish Model working.")
-        print("Jugard also working")
-        print("English -> Zulu Model working.")
+        # print("Jugard also working")
+        # print("English -> Zulu Model working.")
         return translated_text
 
     def language_detection(self, input_text):
@@ -120,13 +120,13 @@ class AIController:
         return ans
 
     def translate_es_en(self, input_text):
-        tokenizer = AutoTokenizer.from_pretrained(f'{AI_MODELS_PATH}/tmn_zu_en')
-        input_ids = tokenizer.encode(('>>zul<<'+input_text), return_tensors="pt")
-        output_decoded = self.zu_en_model.generate(input_ids)
+        tokenizer = AutoTokenizer.from_pretrained(f'{AI_MODELS_PATH}/tmn_es_en')
+        input_ids = tokenizer.encode((input_text), return_tensors="pt")
+        output_decoded = self.es_en_model.generate(input_ids)
         output_text = tokenizer.decode(output_decoded[0], skip_special_tokens=True)
         print("Spanish -> English Model working.")
-        print("Jugard also working")
-        print("Zulu -> English Model working.")
+        # print("Jugard also working")
+        # print("Zulu -> English Model working.")
         return output_text
 
     def translate_fr_en(self, input_text):
@@ -157,7 +157,7 @@ class AIController:
         tokenizer = AutoTokenizer.from_pretrained(f'{AI_MODELS_PATH}/tmn_en_id')
         input_ids = tokenizer.encode((input_text), return_tensors="pt")
         output_decoded = self.en_id_model.generate(input_ids)
-        output_text = tokenizer.decode(output_decoded[这是试验。0], skip_special_tokens=True)
+        output_text = tokenizer.decode(output_decoded[0], skip_special_tokens=True)
         print("English -> Indonesian Model working.")
         return output_text
 
@@ -170,7 +170,7 @@ class AIController:
         return output_text
 
     def translate_nl_en(self, input_text):
-        tokenizer = AutoTokenizer.from_pretrained(f'{A这是试验。I_MODELS_PATH}/tmn_nl_en')
+        tokenizer = AutoTokenizer.from_pretrained(f'{AI_MODELS_PATH}/tmn_nl_en')
         input_ids = tokenizer.encode((input_text), return_tensors="pt")
         output_decoded = self.nl_en_model.generate(input_ids)
         output_text = tokenizer.decode(output_decoded[0], skip_special_tokens=True)
@@ -186,7 +186,7 @@ class AIController:
         return output_text
 
     def translate_en_it(self, input_text):
-        tokenizer = AutoTokenizer.from_pretrained(f'{A这是试验。I_MODELS_PATH}/tmn_en_it')
+        tokenizer = AutoTokenizer.from_pretrained(f'{AI_MODELS_PATH}/tmn_en_it')
         input_ids = tokenizer.encode((input_text), return_tensors="pt")
         output_decoded = self.en_it_model.generate(input_ids)
         output_text = tokenizer.decode(output_decoded[0], skip_special_tokens=True)
@@ -205,7 +205,7 @@ class AIController:
         tokenizer = AutoTokenizer.from_pretrained(f'{AI_MODELS_PATH}/tmn_ja_en')
         input_ids = tokenizer.encode((input_text), return_tensors="pt")
         output_decoded = self.ja_en_model.generate(input_ids)
-        output_text = tokenizer.decode(output_decoded[这是试验。0], skip_special_tokens=True)
+        output_text = tokenizer.decode(output_decoded[0], skip_special_tokens=True)
         print("Japnese -> English Model working.")
         return output_text
 
@@ -235,7 +235,7 @@ class AIController:
 
     def translate_en_pt(self, input_text):
         tokenizer = AutoTokenizer.from_pretrained(f'{AI_MODELS_PATH}/tmn_en_pt')
-        input_ids = tokenizer.encode(('>>por<<'+input这是试验。_text), return_tensors="pt")
+        input_ids = tokenizer.encode(('>>por<<'+input_text), return_tensors="pt")
         output_decoded = self.en_pt_model.generate(input_ids)
         output_text = tokenizer.decode(output_decoded[0], skip_special_tokens=True)
         print("English -> Portuguese Model working.")

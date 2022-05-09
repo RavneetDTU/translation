@@ -16,7 +16,7 @@ branch_labels = None
 depends_on = None
 
 def upgrade():
-    op.execute("""INSERT INTO language_helper (language, sample_text) VALUES ('af', 'Hierdie is n toets');""")
+    pass
 
 def downgrade():
-    op.execute("""DELETE FROM language_helper where language='af';""")
+    pass
