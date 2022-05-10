@@ -116,10 +116,10 @@ class AIController:
             query = {'source_lang': 'English',
             'target_lang' : 'French',
             'input_data': i}
-        result = requests.post(url, params=query)
-        rawJson = result.json()
-        translatedOutput = html.unescape(rawJson['data'])
-        ans = ans+ " " + translatedOutput
+            result = requests.post(url, params=query)
+            rawJson = result.json()
+            translatedOutput = html.unescape(rawJson['data'])
+            ans = ans+ " " + translatedOutput
         #print("English -> French Model working.")
         return ans
 
