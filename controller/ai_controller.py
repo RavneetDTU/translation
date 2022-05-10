@@ -12,10 +12,10 @@ url = 'http://169.255.36.95:5000/translate'
 
 # Libar URL:
 # Local test
-# libra_url = "http://127.0.0.1:5000/translate"
+libra_url = "http://127.0.0.1:5000/translate"
 
 # Production url
-libra_url = "http://192.168.1.105:5000/translate"
+#libra_url = "http://192.168.1.105:5000/translate"
 
 AI_MODELS_PATH = os.path.abspath(os.path.join(os.getcwd(), "ai_models"))
 
@@ -50,6 +50,8 @@ class AIController:
     # Libra model
     en_zh = ""
     zh_en = ""
+    en_ko = ""
+    ko_en = ""
 
     @inject()
     def __init__(self):
@@ -78,6 +80,8 @@ class AIController:
             "translate.en_af": self.translate_en_af,
             "translate.en_zh": self.translate_en_zh,
             "translate.zh_en": self.translate_zh_en,
+            "translate.en_ko": self.translate_en_ko,
+            "translate.ko_en": self.translate_ko_en,
         }
 
     def translate_en_es(self, input_text):
@@ -298,5 +302,26 @@ class AIController:
                 'format':'text'}
         r = requests.post(libra_url,data = pload)
         print("English -> Chinese Model working.")
+        output = (r.json()['translatedText'])
+        return output
+
+    def translate_ko_en(self, input_text):
+
+        pload = {'q':input_text,
+                 'source':'ko',
+                'target':'en',
+                'format':'text'}
+        r = requests.post(libra_url,data = pload)
+        print("Korean -> English Model working.")
+        output = (r.json()['translatedText'])
+        return output
+
+    def translate_en_ko(self, input_text):
+        pload = {'q':input_text,
+                 'source':'en',
+                'target':'ko',
+                'format':'text'}
+        r = requests.post(libra_url,data = pload)
+        print("English -> Korean Model working.")
         output = (r.json()['translatedText'])
         return output
