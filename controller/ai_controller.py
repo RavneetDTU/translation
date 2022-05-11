@@ -101,27 +101,36 @@ class AIController:
 
     def translate_en_fr(self, input_text):
 
-        sentence_list = []
+        # sentence_list = []
+        #
+        # starting_range = 0
+        # for i in range(len(input_text)):
+        #     if(input_text[i] in eng_seprator_set):
+        #         sentence = input_text[starting_range : i+1]
+        #         sentence_list.append(sentence.strip())
+        #         starting_range = i+1
+        #
+        # ans = ""
+        #
+        # for i in sentence_list:
+        #     query = {'source_lang': 'English',
+        #     'target_lang' : 'French',
+        #     'input_data': i}
+        #     result = requests.post(url, params=query)
+        #     rawJson = result.json()
+        #     translatedOutput = html.unescape(rawJson['data'])
+        #     ans = ans+ " " + translatedOutput
+        # #print("English -> French Model working.")
+        # return ans
 
-        starting_range = 0
-        for i in range(len(input_text)):
-            if(input_text[i] in eng_seprator_set):
-                sentence = input_text[starting_range : i+1]
-                sentence_list.append(sentence.strip())
-                starting_range = i+1
-
-        ans = ""
-
-        for i in sentence_list:
-            query = {'source_lang': 'English',
-            'target_lang' : 'French',
-            'input_data': i}
-            result = requests.post(url, params=query)
-            rawJson = result.json()
-            translatedOutput = html.unescape(rawJson['data'])
-            ans = ans+ " " + translatedOutput
-        #print("English -> French Model working.")
-        return ans
+        pload = {'q':input_text,
+                 'source':'en',
+                'target':'fr',
+                'format':'text'}
+        r = requests.post(libra_url,data = pload)
+        print("English -> Korean Model working.")
+        output = (r.json()['translatedText'])
+        return output
 
     def translate_es_en(self, input_text):
         tokenizer = AutoTokenizer.from_pretrained(f'{AI_MODELS_PATH}/tmn_es_en')
