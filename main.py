@@ -12,6 +12,14 @@ from controller.translation_controller import TranslationController
 from controller.auth_controller import AuthController
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 
+#logging
+logging.basicConfig(
+    level=logging.DEBUG,
+    format="{asctime} {levelname:<8} {message}",
+    style='{',
+    filename='%slog' % __file__[:-2],
+    filemode='a'
+)
 
 app = FastAPI()
 
@@ -40,6 +48,7 @@ async def before_after_requests(request: Request, call_next):
     if not error:
         ss.session().commit()
     ss.session().close()
+    logging.error('This is a error level msg in middleware!')
     return response
 
 
@@ -53,6 +62,7 @@ async def verify_token(token: str = Depends(oauth2_scheme)):
             status_code=401,
             detail=error
         )
+        logging.error('We have problem in verify_token')
     return user
 
 
@@ -73,6 +83,7 @@ async def translate(translate_data: TranslateRequest, user=Depends(verify_token)
     res, error = translation_controller.get_translation(translate_data, user)
     if error:
         raise HTTPException(status_code=400, detail={"message": error})
+        logging.error('There is a problem in @app.post("/translate", response_model=TranslateResponse)')
     return res
 
 
@@ -89,6 +100,7 @@ async def suggestion(suggestion_data: SuggestionRequest, user=Depends(verify_tok
     error = translation_controller.add_suggestion(suggestion_data, user)
     if error:
         raise HTTPException(status_code=400, detail={"message": error})
+        logging.error('There is a problem in @app.post("/suggestion", status_code=HTTPStatus.NO_CONTENT))
     return Response(status_code=HTTPStatus.NO_CONTENT.value)
 
 
@@ -106,6 +118,7 @@ async def register(user: User):
     error = auth_controller.register_user(user)
     if error:
         raise HTTPException(status_code=400, detail={"message": error})
+        logging.error('There is an error in @app.post("/register", status_code=HTTPStatus.NO_CONTENT) ')
     return Response(status_code=HTTPStatus.NO_CONTENT.value)
 
 
@@ -122,6 +135,7 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends()):
     data, error = auth_controller.login_user(form_data)
     if error:
         raise HTTPException(status_code=401, detail={"message": error})
+        logging.error('There is an error in @app.post("/login", response_model=Token) ')
     return data
 
 
@@ -137,6 +151,7 @@ async def translated(user_id: int, start_time: int, end_time: int, admin=Depends
     res, error = translation_controller.get_translated_characters_by_user_id(user_id, start_time, end_time)
     if error:
         raise HTTPException(status_code=400, detail={"message": error})
+        logging.error('There is an error in @app.get(/translated/{user_id:int response_model=TranslatedCharacters) ')
     return res
 
 
@@ -148,6 +163,7 @@ async def translated(source, target, start_time: int, end_time: int, admin=Depen
     res, error = translation_controller.get_translated_characters_by_input_output_language(source, target, start_time, end_time)
     if error:
         raise HTTPException(status_code=400, detail={"message": error})
+         logging.error('There is an error in @app.get("/translated/{source:str/{target:str/", response_model=TranslatedCharacters)')
     return res
 
 
@@ -163,4 +179,5 @@ async def status(source, target):
     res, error = translation_controller.get_model_status(source, target)
     if error:
         raise HTTPException(status_code=400, detail={"message": error})
+        logging.error('There is an error in @app.get("/status/{source:str/{target:str", response_model=Status)')
     return res
