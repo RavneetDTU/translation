@@ -9,6 +9,16 @@ from common.pinject.sql_alchemy_session_service_provider import SqlAlchemySessio
 from config.config import Settings
 from model.auth import User, Role
 
+import logging
+
+logging.basicConfig(
+    level=logging.DEBUG,
+    format="{asctime} {levelname:<8} {message}",
+    style='{',
+    filename='%slog' % __file__[:-2],
+    filemode='a'
+)
+
 
 class AuthController:
     pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -48,6 +58,7 @@ class AuthController:
     def login_user(self, form_data):
         user, error = self.authenticate_user(form_data.username, form_data.password)
         if error:
+            logging.error('Error found in login_user')
             return None, error
         access_token = self.__create_access_token(user)
         return {"access_token": access_token, "token_type": "bearer"}, None
@@ -55,8 +66,10 @@ class AuthController:
     def authenticate_user(self, username: str, password: str):
         user = self.__get_user_by_email(username)
         if not user:
+            logging.error('Invalid Username')
             return None, "Invalid user name %s" % username
         if not self.verify_password(password, user.password):
+            logging.error('Invalid password')
             return None, "Invalid password"
         return user, None
 
@@ -70,6 +83,7 @@ class AuthController:
             "exp": datetime.datetime.utcnow() + datetime.timedelta(days=self.__config.jwt.access_token_expire_days)
         }
         encoded_jwt = jwt.encode(payload, self.__config.jwt.secret_key, algorithm=self.__config.jwt.algorithm)
+        logging.info('encoded_jwt has been generated')
         return encoded_jwt
 
     def verify_token(self, token):
@@ -77,6 +91,7 @@ class AuthController:
             payload = jwt.decode(token, self.__config.jwt.secret_key, algorithms=[self.__config.jwt.algorithm])
             username: str = payload.get("sub")
             if username is None:
+                logging.error('username not found, hence raising JWTerror')
                 raise JWTError
             user = self.__get_user_by_email(username)
             return User.get_user_data(user), None
@@ -84,4 +99,5 @@ class AuthController:
             return None, e.args[0].args[0]
 
     def get_user_by_user_id(self, user_id):
+        logging.info('user info generated successfully using user_id')
         return self.__sql_alchemy_session_service_provider.session().query(User).filter(User.id == user_id).first()
