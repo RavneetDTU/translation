@@ -27,6 +27,7 @@ class TranslationController:
             output_text, error = self.__translate_using_intermediate_handler(input_text,
                                                                              input_language,
                                                                              output_language)
+            logging.error('error in __translate function')
         else:
             handler = self.__ai_controller.ai_strategies.get(translation_handler.handler)
             output_text = handler(input_text)
@@ -37,20 +38,21 @@ class TranslationController:
         db_session = self.__sql_alchemy_session_service_provider.session()
         language_helper = self.__get_language_helper(translation_dict["output_language"])
         if language_helper is None:
-            return None, "Invalid output language %s" % translation_dict["output_language"]
+            logging.error('error in get_translation function, Invalid output language%s' % translation_dict["output_language"])
+
         if translation_dict.get("input_language"):
             language_helper = self.__get_language_helper(translation_dict["input_language"])
             if language_helper is None:
-                return None, "Invalid input language %s" % translation_dict["input_language"]
+                logging.error('error in get_translation function, Invalid input language %s' % translation_dict["input_language"])
         if translation_dict.get("input_language", None) is None:
             translation_dict['input_language'] = self.__ai_controller.language_detection(translation_dict['input_text'])
             language_helper = self.__get_language_helper(translation_dict["input_language"])
             if language_helper is None:
-                return None, "Invalid input language %s detected" % translation_dict["input_language"]
+                logging.error('error in get_translation function, Invalid input language %s detected' % translation_dict["input_language"])
         output_text, error = self.__translate(translation_dict['input_text'], translation_dict['input_language'],
                                               translation_dict['output_language'])
         if error:
-            return None, error
+            logging.error('error in get_translation function, line no 54 i.e. %s' % error )
         translation_dict.update({
             "translated_text": output_text,
             "confidence_score": 0,
@@ -77,7 +79,7 @@ class TranslationController:
                 translation_handler_strategy = self.__ai_controller.ai_strategies.get(translation_handler.handler)
                 output_text = translation_handler_strategy(intermediate_text)
                 return output_text, None
-        return None, "Cannot translate from %s to %s" % (input_language, output_language)
+        logging.error('Cannot translate from %s to %s' % (input_language, output_language))
 
     def __get_translation_handler(self, input_language, output_language):
         return self.__sql_alchemy_session_service_provider.session().query(TranslationHandler).filter(
@@ -88,7 +90,7 @@ class TranslationController:
         db_session = self.__sql_alchemy_session_service_provider.session()
         translation = self.__get_translation_by_id(suggestion.translation_id)
         if translation is None:
-            return "Invalid Translation id %s" % suggestion.translation_id
+            logging.error('error in add_suggestion function, Invalid Translation ID %s' % suggestion.translation_id)
         suggestion_dict = suggestion.dict()
         suggestion_dict.update({
             "user_id": user_data["user_id"]
@@ -96,38 +98,42 @@ class TranslationController:
         suggestion_obj = Suggestion(**suggestion_dict)
         db_session.add(suggestion_obj)
         db_session.flush()
+        logging.info('add_suggestion function worked perfectly fine')
         return None
 
     def __get_translation_by_id(self, translation_id: int):
         translation = self.__sql_alchemy_session_service_provider.session().query(Translation).filter(
             Translation.id == translation_id).first()
+        logging.info('__get_translation_by_id function is working fine')
         return translation
 
     def __get_all_translation_by_input_output_language(self, input_language, output_language, start_time, end_time):
         translations = self.__sql_alchemy_session_service_provider.session().query(Translation).filter(
             and_(Translation.input_language == input_language, Translation.output_language == output_language,
                  Translation.created_on >= start_time, Translation.created_on <= end_time)).all()
+        logging.info('__get_all_translation_by_input_output_language is working fine')
         return translations
 
     def __get_all_translation_by_user_id(self, user_id, start_time, end_time):
         translations = self.__sql_alchemy_session_service_provider.session().query(Translation).filter(
             and_(Translation.user_id == user_id, Translation.created_on >= start_time,
                  Translation.created_on <= end_time)).all()
+        logging.info('__get_all_translation_by_user_id is working fine')
         return translations
 
     def get_translated_characters_by_input_output_language(self, input_language, output_language, start_time, end_time):
         if start_time > end_time:
-            return None, "Start time must be less than end time"
+            logging.info('Start time must be less than end time')
         language_helper = self.__get_language_helper(output_language)
         if language_helper is None:
-            return None, "Invalid output language %s" % output_language
+            logging.error('Invalid output language %s in get_translated_characters_by_input_output_language' % output_language)
         language_helper = self.__get_language_helper(input_language)
         if language_helper is None:
-            return None, "Invalid input language %s" % input_language
+            logging.error('Invalid input language %s in get_translated_characters_by_input_output_language' % input_language)
         translations = self.__get_all_translation_by_input_output_language(input_language, output_language, start_time, end_time)
         if not translations:
-            return None, "Translation not found with input language %s and output language %s in requested time range" % (
-                input_language, output_language)
+            logging.info('Translation not found with input language %s and output language %s in requested time range' % (
+                input_language, output_language))
         count = 0
         for translation in translations:
             count += len(translation.translated_text)
@@ -137,10 +143,10 @@ class TranslationController:
 
     def get_translated_characters_by_user_id(self, user_id, start_time, end_time):
         if start_time > end_time:
-            return None, "Start time must be less than end time"
+            logging.info('Start time must be less than end time')
         user = self.__auth_controller.get_user_by_user_id(user_id)
         if not user:
-            return None, "Invalid user id %s" % user_id
+            logging.error('Invalid user id in get_translated_characters_by_user_id function  %s' % user_id)
         translations = self.__get_all_translation_by_user_id(user_id, start_time, end_time)
         count = 0
         for translation in translations:
@@ -156,10 +162,10 @@ class TranslationController:
     def get_model_status(self, input_language, output_language):
         language_helper = self.__get_language_helper(output_language)
         if language_helper is None:
-            return None, "Invalid output language %s" % output_language
+            logging.error('Invalid output language error in get_model_status function  %s' % output_language)
         language_helper = self.__get_language_helper(input_language)
         if language_helper is None:
-            return None, "Invalid input language %s" % input_language
+            logging.error('Invalid input language error in get_model_status function %s' % input_language)
         output_text, error = self.__translate(language_helper.sample_text, input_language, output_language)
         if output_text:
             return {
