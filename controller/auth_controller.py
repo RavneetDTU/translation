@@ -35,6 +35,7 @@ class AuthController:
         user_dict = user_data.dict()
         existing_user = self.__get_user_by_email(user_dict["email"])
         if existing_user:
+            logging.info('username already exists')
             return "User with email id %s already exists" % user_dict["email"]
         user_dict.update({
             "role": Role.CUSTOMER.value,
@@ -58,19 +59,16 @@ class AuthController:
     def login_user(self, form_data):
         user, error = self.authenticate_user(form_data.username, form_data.password)
         if error:
-            logging.error('Error found in login_user')
-            return None, error
+            logging.error('Error found in login_user %s' % error)
         access_token = self.__create_access_token(user)
         return {"access_token": access_token, "token_type": "bearer"}, None
 
     def authenticate_user(self, username: str, password: str):
         user = self.__get_user_by_email(username)
         if not user:
-            logging.error('Invalid Username')
-            return None, "Invalid user name %s" % username
+            logging.error('Invalid Username %s' % username)
         if not self.verify_password(password, user.password):
             logging.error('Invalid password')
-            return None, "Invalid password"
         return user, None
 
     def verify_password(self, plain_password, hashed_password):
