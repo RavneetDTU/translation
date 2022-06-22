@@ -60,6 +60,7 @@ class AuthController:
         user, error = self.authenticate_user(form_data.username, form_data.password)
         if error:
             logging.error('Error found in login_user %s' % error)
+            return None, error
         access_token = self.__create_access_token(user)
         return {"access_token": access_token, "token_type": "bearer"}, None
 
@@ -67,8 +68,10 @@ class AuthController:
         user = self.__get_user_by_email(username)
         if not user:
             logging.error('Invalid Username %s' % username)
+            return None, "Invalid user name %s" % username
         if not self.verify_password(password, user.password):
             logging.error('Invalid password')
+            return None, "Invalid password"
         return user, None
 
     def verify_password(self, plain_password, hashed_password):
