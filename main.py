@@ -19,7 +19,7 @@ logging.basicConfig(
     level=logging.DEBUG,
     format="{asctime} {levelname:<8} {message}",
     style='{',
-    filename= '/home/piyush/Desktop/translation/all_logs.log', #filename='%slog' % __file__[:-2],
+    filename= 'all_logs.log', #filename='%slog' % __file__[:-2],
     filemode='a'
 )
 
