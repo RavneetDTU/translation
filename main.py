@@ -19,9 +19,11 @@ logging.basicConfig(
     level=logging.DEBUG,
     format="{asctime} {levelname:<8} {message}",
     style='{',
-    filename='%slog' % __file__[:-2],
+    filename= '/home/piyush/Desktop/translation/all_logs.log', #filename='%slog' % __file__[:-2],
     filemode='a'
 )
+
+logfile ='main.py'
 
 app = FastAPI()
 
@@ -50,7 +52,7 @@ async def before_after_requests(request: Request, call_next):
     if not error:
         ss.session().commit()
     ss.session().close()
-    logging.error('This is an error level msg in middleware : %s' % error)
+    logging.error(logfile+' error in middleware : %s' % error)
     return response
 
 
@@ -60,16 +62,17 @@ async def verify_token(token: str = Depends(oauth2_scheme)):
     auth_controller = container.provide(AuthController)
     user, error = auth_controller.verify_token(token)
     if error:
+        logging.error(logfile+' error in verify_token')
         raise HTTPException(
             status_code=401,
             detail=error
         )
-        logging.error('We have problem in verify_token')
     return user
 
 
 async def verify_admin(user=Depends(verify_token)):
     if user["role"] != "admin":
+        logging.error(logfile+' Unauthorized user error in verify_admin')
         raise HTTPException(
             status_code=401,
             detail="Unauthorized"
@@ -84,8 +87,8 @@ async def translate(translate_data: TranslateRequest, user=Depends(verify_token)
     translation_controller = container.provide(TranslationController)
     res, error = translation_controller.get_translation(translate_data, user)
     if error:
+        logging.error(logfile+' error in /translate function : %s' % error)
         raise HTTPException(status_code=400, detail={"message": error})
-        logging.error('There is an error in /translate function : %s' % error)
     return res
 
 
@@ -101,8 +104,8 @@ async def suggestion(suggestion_data: SuggestionRequest, user=Depends(verify_tok
     translation_controller = container.provide(TranslationController)
     error = translation_controller.add_suggestion(suggestion_data, user)
     if error:
+        logging.error(logfile+' error in suggestion function : %s' % error)
         raise HTTPException(status_code=400, detail={"message": error})
-        logging.error('There is an error in suggestion function : %s' % error)
     return Response(status_code=HTTPStatus.NO_CONTENT.value)
 
 
@@ -119,8 +122,8 @@ async def register(user: User):
     auth_controller = container.provide(AuthController)
     error = auth_controller.register_user(user)
     if error:
+        logging.error(logfile+' error in /register function %s' % error)
         raise HTTPException(status_code=400, detail={"message": error})
-        logging.error('There is an error in /register function %s' % error)
     return Response(status_code=HTTPStatus.NO_CONTENT.value)
 
 
@@ -136,8 +139,8 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends()):
     auth_controller = container.provide(AuthController)
     data, error = auth_controller.login_user(form_data)
     if error:
+        logging.error(logfile+' error in /login function %s' % error)
         raise HTTPException(status_code=401, detail={"message": error})
-        logging.error('There is an error in /login function %s' % error)
     return data
 
 
@@ -152,8 +155,8 @@ async def translated(user_id: int, start_time: int, end_time: int, admin=Depends
     translation_controller = container.provide(TranslationController)
     res, error = translation_controller.get_translated_characters_by_user_id(user_id, start_time, end_time)
     if error:
+        logging.error(logfile+' error in /translated/user_id function %s' % error)
         raise HTTPException(status_code=400, detail={"message": error})
-        logging.error('There is an error in /translated/user_id function %s' % error)
     return res
 
 
@@ -164,8 +167,8 @@ async def translated(source, target, start_time: int, end_time: int, admin=Depen
     translation_controller = container.provide(TranslationController)
     res, error = translation_controller.get_translated_characters_by_input_output_language(source, target, start_time, end_time)
     if error:
+        logging.error(logfile+' error in /translated/source/target/ function %s' % error)
         raise HTTPException(status_code=400, detail={"message": error})
-        logging.error('There is an error in /translated/source/target/ function %s' % error)
     return res
 
 
@@ -180,6 +183,6 @@ async def status(source, target):
     translation_controller = container.provide(TranslationController)
     res, error = translation_controller.get_model_status(source, target)
     if error:
+        logging.error(logfile+' error in /status function %s' % error)
         raise HTTPException(status_code=400, detail={"message": error})
-        logging.error('There is an error in /status function %s' % error)
     return res
