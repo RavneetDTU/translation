@@ -15,9 +15,11 @@ logging.basicConfig(
     level=logging.DEBUG,
     format="{asctime} {levelname:<8} {message}",
     style='{',
-    filename='%slog' % __file__[:-2],
+    filename= '/home/piyush/Desktop/translation/all_logs.log', #filename='%slog' % __file__[:-2],
     filemode='a'
 )
+
+logfile = 'auth_controller.py'
 
 
 class AuthController:
@@ -35,7 +37,7 @@ class AuthController:
         user_dict = user_data.dict()
         existing_user = self.__get_user_by_email(user_dict["email"])
         if existing_user:
-            logging.info('username already exists')
+            logging.info(logfile+' register_user func : username already exists')
             return "User with email id %s already exists" % user_dict["email"]
         user_dict.update({
             "role": Role.CUSTOMER.value,
@@ -59,7 +61,7 @@ class AuthController:
     def login_user(self, form_data):
         user, error = self.authenticate_user(form_data.username, form_data.password)
         if error:
-            logging.error('Error found in login_user %s' % error)
+            logging.error(logfile+' login_user func : Error found in login_user %s' % error)
             return None, error
         access_token = self.__create_access_token(user)
         return {"access_token": access_token, "token_type": "bearer"}, None
@@ -67,10 +69,10 @@ class AuthController:
     def authenticate_user(self, username: str, password: str):
         user = self.__get_user_by_email(username)
         if not user:
-            logging.error('Invalid Username %s' % username)
+            logging.error(logfile+' authenticate_user func : Invalid Username %s' % username)
             return None, "Invalid user name %s" % username
         if not self.verify_password(password, user.password):
-            logging.error('Invalid password')
+            logging.error(logfile+' authenticate_user func : Invalid password')
             return None, "Invalid password"
         return user, None
 
@@ -84,7 +86,7 @@ class AuthController:
             "exp": datetime.datetime.utcnow() + datetime.timedelta(days=self.__config.jwt.access_token_expire_days)
         }
         encoded_jwt = jwt.encode(payload, self.__config.jwt.secret_key, algorithm=self.__config.jwt.algorithm)
-        logging.info('encoded_jwt has been generated')
+        logging.info(logfile+' __create_access_token func: encoded_jwt has been generated')
         return encoded_jwt
 
     def verify_token(self, token):
@@ -92,13 +94,14 @@ class AuthController:
             payload = jwt.decode(token, self.__config.jwt.secret_key, algorithms=[self.__config.jwt.algorithm])
             username: str = payload.get("sub")
             if username is None:
-                logging.error('username not found, hence raising JWTerror')
+                logging.error(logfile+' username not found, hence raising JWTerror')
                 raise JWTError
             user = self.__get_user_by_email(username)
             return User.get_user_data(user), None
         except JWTError as e:
+            logging.error(logfile+' JWTError %s' % e)
             return None, e.args[0].args[0]
 
     def get_user_by_user_id(self, user_id):
-        logging.info('user info generated successfully using user_id')
+        logging.info(logfile+' user info generated successfully using user_id')
         return self.__sql_alchemy_session_service_provider.session().query(User).filter(User.id == user_id).first()

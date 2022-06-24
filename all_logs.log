@@ -1,0 +1,2 @@
+2022-06-24 11:57:08,119 DEBUG    Starting new HTTPS connection (1): huggingface.co:443
+2022-06-24 11:57:09,420 DEBUG    https://huggingface.co:443 "HEAD //home/piyush/Desktop/translation/ai_models/tmn_en_es/resolve/main/config.json HTTP/1.1" 404 0

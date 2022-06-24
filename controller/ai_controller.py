@@ -1,3 +1,4 @@
+from cmath import log
 import os
 
 from fairseq.models.transformer import TransformerModel
@@ -15,10 +16,12 @@ logging.basicConfig(
     level=logging.DEBUG,
     format="{asctime} {levelname:<8} {message}",
     style='{',
-    filename='%slog' % __file__[:-2],
+    filename= '/home/piyush/Desktop/translation/all_logs.log', #'%slog' % __file__[:-2],
     filemode='a'
 )
 
+
+logfile = 'ai_controller.py'
 
 url = 'http://169.255.36.95:5000/translate'
 
@@ -101,7 +104,7 @@ class AIController:
         input_ids = tokenizer.encode((input_text), return_tensors="pt")
         output_decoded = self.en_es_model.generate(input_ids)
         translated_text = tokenizer.decode(output_decoded[0], skip_special_tokens=True)
-        logging.info("English -> Spanish Model working.")
+        logging.info(logfile+" translate_en_es function English -> Spanish Model working.")
         # print("Jugard also working")
         # print("English -> Zulu Model working.")
         return translated_text
@@ -141,7 +144,7 @@ class AIController:
                 'target':'fr',
                 'format':'text'}
         r = requests.post(libra_url,data = pload)
-        logging.info("English -> Korean Model working.")
+        logging.info(logfile+" translate_en_fr function : English -> french Model working.")
         output = (r.json()['translatedText'])
         return output
 
@@ -150,7 +153,7 @@ class AIController:
         input_ids = tokenizer.encode((input_text), return_tensors="pt")
         output_decoded = self.es_en_model.generate(input_ids)
         output_text = tokenizer.decode(output_decoded[0], skip_special_tokens=True)
-        logging.info("Spanish -> English Model working.")
+        logging.info(logfile+" translate_en_es : Spanish -> English Model working.")
         # print("Jugard also working")
         # print("Zulu -> English Model working.")
         return output_text
@@ -160,7 +163,7 @@ class AIController:
         input_ids = tokenizer.encode((input_text), return_tensors="pt")
         output_decoded = self.fr_en_model.generate(input_ids)
         output_text = tokenizer.decode(output_decoded[0], skip_special_tokens=True)
-        logging.info("French -> English Model working.")
+        logging.info(logfile+"ranslate_fr_en function :French -> English Model working.")
         return output_text
 
     def translate_zu_en(self, input_text):
@@ -168,7 +171,7 @@ class AIController:
         input_ids = tokenizer.encode(('>>zul<<'+input_text), return_tensors="pt")
         output_decoded = self.zu_en_model.generate(input_ids)
         output_text = tokenizer.decode(output_decoded[0], skip_special_tokens=True)
-        logging.info("Zulu -> English Model working.")
+        logging.info(logfile+" translate_zu_en :Zulu -> English Model working.")
         return output_text
 
     def translate_en_zu(self, input_text):
@@ -176,7 +179,7 @@ class AIController:
         input_ids = tokenizer.encode(('>>zul<<'+input_text), return_tensors="pt")
         output_decoded = self.en_zu_model.generate(input_ids)
         output_text = tokenizer.decode(output_decoded[0], skip_special_tokens=True)
-        logging.info("English -> Zulu Model working.")
+        logging.info(logfile+" translate_en_zu : English -> Zulu Model working.")
         return output_text
 
     def translate_en_id(self, input_text):
@@ -184,7 +187,7 @@ class AIController:
         input_ids = tokenizer.encode((input_text), return_tensors="pt")
         output_decoded = self.en_id_model.generate(input_ids)
         output_text = tokenizer.decode(output_decoded[0], skip_special_tokens=True)
-        logging.info("English -> Indonesian Model working.")
+        logging.info(logfile+" translate_en_id func : English -> Indonesian Model working.")
         return output_text
 
     def translate_id_en(self, input_text):
@@ -192,7 +195,7 @@ class AIController:
         input_ids = tokenizer.encode((input_text), return_tensors="pt")
         output_decoded = self.id_en_model.generate(input_ids)
         output_text = tokenizer.decode(output_decoded[0], skip_special_tokens=True)
-        logging.info("Indonesian -> English Model working.")
+        logging.info(logfile+" translate_id_en func : Indonesian -> English Model working.")
         return output_text
 
     def translate_nl_en(self, input_text):
@@ -200,7 +203,7 @@ class AIController:
         input_ids = tokenizer.encode((input_text), return_tensors="pt")
         output_decoded = self.nl_en_model.generate(input_ids)
         output_text = tokenizer.decode(output_decoded[0], skip_special_tokens=True)
-        logging.info("Dutch -> English Model working.")
+        logging.info(logfile+" translate_nl_en func : Dutch -> English Model working.")
         return output_text
 
     def translate_en_nl(self, input_text):
@@ -208,7 +211,7 @@ class AIController:
         input_ids = tokenizer.encode((input_text), return_tensors="pt")
         output_decoded = self.en_nl_model.generate(input_ids)
         output_text = tokenizer.decode(output_decoded[0], skip_special_tokens=True)
-        logging.info("English -> Dutch Model working.")
+        logging.info(logfile+" translate_en_nl func : English -> Dutch Model working.")
         return output_text
 
     def translate_en_it(self, input_text):
@@ -216,7 +219,7 @@ class AIController:
         input_ids = tokenizer.encode((input_text), return_tensors="pt")
         output_decoded = self.en_it_model.generate(input_ids)
         output_text = tokenizer.decode(output_decoded[0], skip_special_tokens=True)
-        logging.info("English -> Italian Model working.")
+        logging.info(logfile+" translate_en_it func : English -> Italian Model working.")
         return output_text
 
     def translate_it_en(self, input_text):
@@ -224,7 +227,7 @@ class AIController:
         input_ids = tokenizer.encode((input_text), return_tensors="pt")
         output_decoded = self.it_en_model.generate(input_ids)
         output_text = tokenizer.decode(output_decoded[0], skip_special_tokens=True)
-        logging.info("Italian -> English Model working.")
+        logging.info(logfile+" translate_it_en func : Italian -> English Model working.")
         return output_text
 
     def translate_ja_en(self, input_text):
@@ -232,7 +235,7 @@ class AIController:
         input_ids = tokenizer.encode((input_text), return_tensors="pt")
         output_decoded = self.ja_en_model.generate(input_ids)
         output_text = tokenizer.decode(output_decoded[0], skip_special_tokens=True)
-        logging.info("Japnese -> English Model working.")
+        logging.info(logfile+" translate_ja_en func : Japnese -> English Model working.")
         return output_text
 
     def translate_en_ja(self, input_text):
@@ -240,7 +243,7 @@ class AIController:
         input_ids = tokenizer.encode((input_text), return_tensors="pt")
         output_decoded = self.en_ja_model.generate(input_ids)
         output_text = tokenizer.decode(output_decoded[0], skip_special_tokens=True)
-        logging.info("English -> Japnese Model working.")
+        logging.info(logfile+" translate_en_ja func : English -> Japnese Model working.")
         return output_text
 
     def translate_en_ru(self, input_text):
@@ -248,7 +251,7 @@ class AIController:
         input_ids = tokenizer.encode((input_text), return_tensors="pt")
         output_decoded = self.en_ru_model.generate(input_ids)
         output_text = tokenizer.decode(output_decoded[0], skip_special_tokens=True)
-        logging.info("English -> Russian Model working.")
+        logging.info(logfile+" translate_en_ru func : English -> Russian Model working.")
         return output_text
 
     def translate_ru_en(self, input_text):
@@ -256,7 +259,7 @@ class AIController:
         input_ids = tokenizer.encode((input_text), return_tensors="pt")
         output_decoded = self.ru_en_model.generate(input_ids)
         output_text = tokenizer.decode(output_decoded[0], skip_special_tokens=True)
-        logging.info("Russian -> English Model working.")
+        logging.info(logfile+" translate_ru_en func : Russian -> English Model working.")
         return output_text
 
     def translate_en_pt(self, input_text):
@@ -264,7 +267,7 @@ class AIController:
         input_ids = tokenizer.encode(('>>por<<'+input_text), return_tensors="pt")
         output_decoded = self.en_pt_model.generate(input_ids)
         output_text = tokenizer.decode(output_decoded[0], skip_special_tokens=True)
-        logging.info("English -> Portuguese Model working.")
+        logging.info(logfile+" translate_en_pt func : English -> Portuguese Model working.")
         return output_text
 
     def translate_pt_en(self, input_text):
@@ -272,7 +275,7 @@ class AIController:
         input_ids = tokenizer.encode(('>>por<<'+input_text), return_tensors="pt")
         output_decoded = self.pt_en_model.generate(input_ids)
         output_text = tokenizer.decode(output_decoded[0], skip_special_tokens=True)
-        logging.info("Portuguese -> English Model working.")
+        logging.info(logfile+" translate_pt_en func : Portuguese -> English Model working.")
         return output_text
 
     def translate_de_en(self, input_text):
@@ -280,7 +283,7 @@ class AIController:
         input_ids = tokenizer.encode((input_text), return_tensors="pt")
         output_decoded = self.de_en_model.generate(input_ids)
         output_text = tokenizer.decode(output_decoded[0], skip_special_tokens=True)
-        logging.info("German -> English Model working.")
+        logging.info(logfile+" translate_de_en func : German -> English Model working.")
         return output_text
 
     def translate_en_de(self, input_text):
@@ -288,14 +291,14 @@ class AIController:
         input_ids = tokenizer.encode((input_text), return_tensors="pt")
         output_decoded = self.en_de_model.generate(input_ids)
         output_text = tokenizer.decode(output_decoded[0], skip_special_tokens=True)
-        logging.info("English -> German Model working.")
+        logging.info(logfile+" translate_en_de func : English -> German Model working.")
         return output_text
     def translate_en_af(self, input_text):
         tokenizer = AutoTokenizer.from_pretrained(f'{AI_MODELS_PATH}/tmn_en_af')
         input_ids = tokenizer.encode((input_text), return_tensors="pt")
         output_decoded = self.en_af_model.generate(input_ids)
         output_text = tokenizer.decode(output_decoded[0], skip_special_tokens=True)
-        logging.info("English -> Afrikaans Model working.")
+        logging.info(logfile+" translate_en_af func : English -> Afrikaans Model working.")
         return output_text
 
     def translate_af_en(self, input_text):
@@ -303,7 +306,7 @@ class AIController:
         input_ids = tokenizer.encode((input_text), return_tensors="pt")
         output_decoded = self.af_en_model.generate(input_ids)
         output_text = tokenizer.decode(output_decoded[0], skip_special_tokens=True)
-        logging.info("Afrikaans -> English Model working.")
+        logging.info(logfile+" translate_af_en func : Afrikaans -> English Model working.")
         return output_text
 
     def translate_zh_en(self, input_text):
@@ -313,7 +316,7 @@ class AIController:
                 'target':'en',
                 'format':'text'}
         r = requests.post(libra_url,data = pload)
-        logging.info("Chinese -> English Model working.")
+        logging.info(logfile+" translate_zh_en func : Chinese -> English Model working.")
         output = (r.json()['translatedText'])
         return output
 
@@ -323,7 +326,7 @@ class AIController:
                 'target':'zh',
                 'format':'text'}
         r = requests.post(libra_url,data = pload)
-        logging.info("English -> Chinese Model working.")
+        logging.info(logfile+" translate_en_zh func : English -> Chinese Model working.")
         output = (r.json()['translatedText'])
         return output
 
@@ -334,7 +337,7 @@ class AIController:
                 'target':'en',
                 'format':'text'}
         r = requests.post(libra_url,data = pload)
-        logging.info("Korean -> English Model working.")
+        logging.info(logfile+" translate_ko_en func : Korean -> English Model working.")
         output = (r.json()['translatedText'])
         return output
 
@@ -344,6 +347,6 @@ class AIController:
                 'target':'ko',
                 'format':'text'}
         r = requests.post(libra_url,data = pload)
-        logging.info("English -> Korean Model working.")
+        logging.info(logfile+" translate_en_ko func : English -> Korean Model working.")
         output = (r.json()['translatedText'])
         return output
