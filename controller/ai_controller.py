@@ -10,12 +10,13 @@ import requests
 
 url = 'http://169.255.36.95:5000/translate'
 
-# Libar URL:
+# Libar URL
 # Local test
 # libra_url = "http://127.0.0.1:5000/translate"
 
 # Production url
 libra_url = "http://192.168.1.105:5000/translate"
+
 
 AI_MODELS_PATH = os.path.abspath(os.path.join(os.getcwd(), "ai_models"))
 
@@ -360,5 +361,5 @@ class AIController:
                 'format':'text'}
         r = requests.post(libra_url,data = pload)
         print("Hindi -> English Model working.")
-        output = (r.json()['translatedText'])
+        output = (r.json())
         return output
