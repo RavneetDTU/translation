@@ -85,8 +85,8 @@ class AIController:
             "translate.zh_en": self.translate_zh_en,
             "translate.en_ko": self.translate_en_ko,
             "translate.ko_en": self.translate_ko_en,
-            "translate.ko_en": self.translate_en_hi,
-            "translate.ko_en": self.translate_hi_en,
+            "translate.en_hi": self.translate_en_hi,
+            "translate.hi_en": self.translate_hi_en,
         }
 
     def translate_en_es(self, input_text):
@@ -361,5 +361,5 @@ class AIController:
                 'format':'text'}
         r = requests.post(libra_url,data = pload)
         print("Hindi -> English Model working.")
-        output = (r.json())
+        output = (r.json()['translatedText'])
         return output
