@@ -10,7 +10,7 @@ pip install -r requirements.txt
 # Create database:
 1. CREATE DATABASE translation;
 
-2. CREATE USER 'translator'@'localhost' IDENTIFIED BY 'translator@123';
+2. CREATE USER 'translator'@'localhost' IDENTIFIED BY 'translator#123';
 
 3. GRANT ALL PRIVILEGES ON translation.* TO 'translator'@'localhost';
 
