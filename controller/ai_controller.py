@@ -215,20 +215,24 @@ class AIController:
         return output_text
 
     def translate_ja_en(self, input_text):
-        tokenizer = AutoTokenizer.from_pretrained(f'{AI_MODELS_PATH}/tmn_ja_en')
-        input_ids = tokenizer.encode((input_text), return_tensors="pt")
-        output_decoded = self.ja_en_model.generate(input_ids)
-        output_text = tokenizer.decode(output_decoded[0], skip_special_tokens=True)
-        print("Japnese -> English Model working.")
-        return output_text
+        pload = {'q':input_text,
+                 'source':'ja',
+                'target':'en',
+                'format':'text'}
+        r = requests.post(libra_url,data = pload)
+        print("Japanese -> English Model working.")
+        output = (r.json()['translatedText'])
+        return output
 
     def translate_en_ja(self, input_text):
-        tokenizer = AutoTokenizer.from_pretrained(f'{AI_MODELS_PATH}/tmn_en_ja')
-        input_ids = tokenizer.encode((input_text), return_tensors="pt")
-        output_decoded = self.en_ja_model.generate(input_ids)
-        output_text = tokenizer.decode(output_decoded[0], skip_special_tokens=True)
-        print("English -> Japnese Model working.")
-        return output_text
+        pload = {'q':input_text,
+                 'source':'en',
+                'target':'ja',
+                'format':'text'}
+        r = requests.post(libra_url,data = pload)
+        print("English -> Japanese Model working.")
+        output = (r.json()['translatedText'])
+        return output
 
     def translate_en_ru(self, input_text):
         tokenizer = FSMTTokenizer.from_pretrained(f'{AI_MODELS_PATH}/tmn_en_ru')
