@@ -63,6 +63,14 @@ class AIController:
     tr_en = ""
     en_vi = ""
     vi_en = ""
+    en_az = ""
+    az_en = ""
+    en_cz = ""
+    cz_en = ""
+    en_fi = ""
+    fi_en = ""
+    en_el = ""
+    el_en = ""
 
     @inject()
     def __init__(self):
@@ -103,6 +111,14 @@ class AIController:
             "translate.tr_en": self.translate_tr_en,
             "translate.en_vi": self.translate_en_vi,
             "translate.vi_en": self.translate_vi_en,
+            "translate.az_en": self.translate_az_en,
+            "translate.en_az": self.translate_en_az,
+            "translate.cz_en": self.translate_cz_en,
+            "translate.en_cz": self.translate_en_cz,
+            "translate.en_fi": self.translate_en_fi,
+            "translate.fi_en": self.translate_fi_en,
+            "translate.en_el": self.translate_en_el,
+            "translate.el_en": self.translate_el_en,
         }
 
     def translate_en_es(self, input_text):
@@ -459,5 +475,85 @@ class AIController:
                 'format':'text'}
         r = requests.post(libra_url,data = pload)
         print("VI-> English Model working.")
+        output = (r.json()['translatedText'])
+        return output
+
+    def translate_az_en(self, input_text):
+        pload = {'q':input_text,
+                 'source':'az',
+                'target':'en',
+                'format':'text'}
+        r = requests.post(libra_url,data = pload)
+        print("AZ-> English Model working.")
+        output = (r.json()['translatedText'])
+        return output
+
+    def translate_en_az(self, input_text):
+        pload = {'q':input_text,
+                 'source':'en',
+                'target':'az',
+                'format':'text'}
+        r = requests.post(libra_url,data = pload)
+        print("English -> AZ Model working.")
+        output = (r.json()['translatedText'])
+        return output
+
+    def translate_en_cz(self, input_text):
+        pload = {'q':input_text,
+                 'source':'en',
+                'target':'cz',
+                'format':'text'}
+        r = requests.post(libra_url,data = pload)
+        print("English -> CZ Model working.")
+        output = (r.json()['translatedText'])
+        return output
+
+    def translate_cz_en(self, input_text):
+        pload = {'q':input_text,
+                 'source':'cz',
+                'target':'en',
+                'format':'text'}
+        r = requests.post(libra_url,data = pload)
+        print("CZ -> English Model working.")
+        output = (r.json()['translatedText'])
+        return output
+
+    def translate_fi_en(self, input_text):
+        pload = {'q':input_text,
+                 'source':'fi',
+                'target':'en',
+                'format':'text'}
+        r = requests.post(libra_url,data = pload)
+        print("FI -> English Model working.")
+        output = (r.json()['translatedText'])
+        return output
+
+    def translate_en_fi(self, input_text):
+        pload = {'q':input_text,
+                 'source':'en',
+                'target':'fi',
+                'format':'text'}
+        r = requests.post(libra_url,data = pload)
+        print("English -> FI Model working.")
+        output = (r.json()['translatedText'])
+        return output
+
+    def translate_en_el(self, input_text):
+        pload = {'q':input_text,
+                 'source':'en',
+                'target':'el',
+                'format':'text'}
+        r = requests.post(libra_url,data = pload)
+        print("English -> Greek Model working.")
+        output = (r.json()['translatedText'])
+        return output
+
+    def translate_el_en(self, input_text):
+        pload = {'q':input_text,
+                 'source':'el',
+                'target':'en',
+                'format':'text'}
+        r = requests.post(libra_url,data = pload)
+        print("Greek -> English Model working.")
         output = (r.json()['translatedText'])
         return output
