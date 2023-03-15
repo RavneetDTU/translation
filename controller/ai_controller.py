@@ -15,7 +15,7 @@ url = 'http://169.255.36.95:5000/translate'
 # libra_url = "http://127.0.0.1:5000/translate"
 
 # Production url
-libra_url = "http://192.168.1.110:5000/translate"
+libra_url = "http://192.168.0.101:5000/translate"
 
 
 AI_MODELS_PATH = os.path.abspath(os.path.join(os.getcwd(), "ai_models"))
