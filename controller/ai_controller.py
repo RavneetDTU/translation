@@ -85,6 +85,9 @@ class AIController:
 
     en_sk = ""
     sk_en = ""
+    
+    en_ca = ""
+    ca_en = ""
 
     @inject()
     def __init__(self):
@@ -143,6 +146,8 @@ class AIController:
             "translate.fa_en": self.translate_fa_en,
             "translate.sk_en": self.translate_sk_en,
             "translate.en_sk": self.translate_en_sk,
+            "translate.ca_en": self.translate_ca_en,
+            "translate.en_ca": self.translate_en_ca,
         }
 
     def translate_en_es(self, input_text):
@@ -680,5 +685,26 @@ class AIController:
                 'format':'text'}
         r = requests.post(libra_url,data = pload)
         print("English-> Solvik Model working.")
+        output = (r.json()['translatedText'])
+        return output
+
+
+    def translate_en_ca(self, input_text):
+        pload = {'q':input_text,
+                 'source':'en',
+                'target':'ca',
+                'format':'text'}
+        r = requests.post(libra_url,data = pload)
+        print("English-> Catalan Model working.")
+        output = (r.json()['translatedText'])
+        return output
+
+    def translate_ca_en(self, input_text):
+        pload = {'q':input_text,
+                 'source':'ca',
+                'target':'en',
+                'format':'text'}
+        r = requests.post(libra_url,data = pload)
+        print("Catalan-> English Model working.")
         output = (r.json()['translatedText'])
         return output
