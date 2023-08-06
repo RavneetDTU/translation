@@ -23,5 +23,5 @@ def upgrade():
 
 def downgrade():
     op.execute("""DELETE FROM translation_handler where input_language='en' and output_language='ca';""")
-    op.execute("""DELETE FROM translation_handler where input_language='zh' and output_language='en';""")
+    op.execute("""DELETE FROM translation_handler where input_language='ca' and output_language='en';""")
     op.execute("""DELETE FROM language_helper where language='ca';""")
