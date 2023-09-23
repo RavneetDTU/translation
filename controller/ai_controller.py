@@ -50,6 +50,15 @@ class AIController:
     bg_en_model = AutoModelForSeq2SeqLM.from_pretrained(f'{AI_MODELS_PATH}/tmn_bg_en')
     en_bg_model = AutoModelForSeq2SeqLM.from_pretrained(f'{AI_MODELS_PATH}/tmn_en_bg')
 
+    xh_en_model = AutoModelForSeq2SeqLM.from_pretrained(f'{AI_MODELS_PATH}/tmn_xh_en')
+    en_xh_model = AutoModelForSeq2SeqLM.from_pretrained(f'{AI_MODELS_PATH}/tmn_en_xh')
+
+    swc_en_model = AutoModelForSeq2SeqLM.from_pretrained(f'{AI_MODELS_PATH}/tmn_swc_en')
+    en_swc_model = AutoModelForSeq2SeqLM.from_pretrained(f'{AI_MODELS_PATH}/tmn_en_swc')
+
+    mk_en_model = AutoModelForSeq2SeqLM.from_pretrained(f'{AI_MODELS_PATH}/tmn_mk_en')
+    en_mk_model = AutoModelForSeq2SeqLM.from_pretrained(f'{AI_MODELS_PATH}/tmn_en_mk')
+
     # Libra model
     en_zh = ""
     zh_en = ""
@@ -189,6 +198,15 @@ class AIController:
 
             "translate.bg_en": self.translate_bg_en,
             "translate.en_bg": self.translate_en_bg,
+
+            "translate.xh_en": self.translate_xh_en,
+            "translate.en_xh": self.translate_en_xh,
+
+            "translate.swc_en": self.translate_swc_en,
+            "translate.en_swc": self.translate_en_swc,
+
+            "translate.mk_en": self.translate_mk_en,
+            "translate.en_mk": self.translate_en_mk,
         }
 
     def translate_en_es(self, input_text):
@@ -882,7 +900,7 @@ class AIController:
         output = (r.json()['translatedText'])
         return output
 
-
+    # For BG:
     def translate_en_bg(self, input_text):
         tokenizer = AutoTokenizer.from_pretrained(f'{AI_MODELS_PATH}/tmn_en_bg')
         input_ids = tokenizer.encode((input_text), return_tensors="pt")
@@ -898,3 +916,55 @@ class AIController:
         output_text = tokenizer.decode(output_decoded[0], skip_special_tokens=True)
         print("Bulgurain -> English Model working.")
         return output_text
+
+    # For XH:
+    def translate_en_xh(self, input_text):
+        tokenizer = AutoTokenizer.from_pretrained(f'{AI_MODELS_PATH}/tmn_en_xh')
+        input_ids = tokenizer.encode((input_text), return_tensors="pt")
+        output_decoded = self.en_xh_model.generate(input_ids)
+        output_text = tokenizer.decode(output_decoded[0], skip_special_tokens=True)
+        print("English -> Xhosa Model working.")
+        return output_text
+
+    def translate_xh_en(self, input_text):
+        tokenizer = AutoTokenizer.from_pretrained(f'{AI_MODELS_PATH}/tmn_xh_en')
+        input_ids = tokenizer.encode((input_text), return_tensors="pt")
+        output_decoded = self.xh_en_model.generate(input_ids)
+        output_text = tokenizer.decode(output_decoded[0], skip_special_tokens=True)
+        print("Xhosa -> English Model working.")
+        return output_text
+
+    # For SWC:
+    def translate_en_swc(self, input_text):
+        tokenizer = AutoTokenizer.from_pretrained(f'{AI_MODELS_PATH}/tmn_en_swc')
+        input_ids = tokenizer.encode((input_text), return_tensors="pt")
+        output_decoded = self.en_swc_model.generate(input_ids)
+        output_text = tokenizer.decode(output_decoded[0], skip_special_tokens=True)
+        print("English -> Swahilli Model working.")
+        return output_text
+
+    def translate_swc_en(self, input_text):
+        tokenizer = AutoTokenizer.from_pretrained(f'{AI_MODELS_PATH}/tmn_swc_en')
+        input_ids = tokenizer.encode((input_text), return_tensors="pt")
+        output_decoded = self.swc_en_model.generate(input_ids)
+        output_text = tokenizer.decode(output_decoded[0], skip_special_tokens=True)
+        print("Swahilli -> English Model working.")
+        return output_text
+
+    # For Mk:
+    def translate_en_mk(self, input_text):
+        tokenizer = AutoTokenizer.from_pretrained(f'{AI_MODELS_PATH}/tmn_en_mk')
+        input_ids = tokenizer.encode((input_text), return_tensors="pt")
+        output_decoded = self.en_mk_model.generate(input_ids)
+        output_text = tokenizer.decode(output_decoded[0], skip_special_tokens=True)
+        print("English -> Macedonian Model working.")
+        return output_text
+
+    def translate_mk_en(self, input_text):
+        tokenizer = AutoTokenizer.from_pretrained(f'{AI_MODELS_PATH}/tmn_mk_en')
+        input_ids = tokenizer.encode((input_text), return_tensors="pt")
+        output_decoded = self.mk_en_model.generate(input_ids)
+        output_text = tokenizer.decode(output_decoded[0], skip_special_tokens=True)
+        print("Macedonian -> English Model working.")
+        return output_text
+
