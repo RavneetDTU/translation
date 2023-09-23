@@ -47,6 +47,8 @@ class AIController:
     de_en_model = FSMTForConditionalGeneration.from_pretrained(f'{AI_MODELS_PATH}/tmn_de_en')
     af_en_model = AutoModelForSeq2SeqLM.from_pretrained(f'{AI_MODELS_PATH}/tmn_af_en')
     en_af_model = AutoModelForSeq2SeqLM.from_pretrained(f'{AI_MODELS_PATH}/tmn_en_af')
+    bg_en_model = AutoModelForSeq2SeqLM.from_pretrained(f'{AI_MODELS_PATH}/tmn_bg_en')
+    en_bg_model = AutoModelForSeq2SeqLM.from_pretrained(f'{AI_MODELS_PATH}/tmn_en_bg')
 
     # Libra model
     en_zh = ""
@@ -184,6 +186,9 @@ class AIController:
 
             "translate.th_en": self.translate_th_en,
             "translate.en_th": self.translate_en_th,
+
+            "translate.bg_en": self.translate_bg_en,
+            "translate.en_bg": self.translate_en_bg,
         }
 
     def translate_en_es(self, input_text):
@@ -876,3 +881,20 @@ class AIController:
         print("English -> Thai Model working.")
         output = (r.json()['translatedText'])
         return output
+
+
+    def translate_en_bg(self, input_text):
+        tokenizer = AutoTokenizer.from_pretrained(f'{AI_MODELS_PATH}/tmn_en_bg')
+        input_ids = tokenizer.encode((input_text), return_tensors="pt")
+        output_decoded = self.en_bg_model.generate(input_ids)
+        output_text = tokenizer.decode(output_decoded[0], skip_special_tokens=True)
+        print("English -> Bulgurain Model working.")
+        return output_text
+
+    def translate_bg_en(self, input_text):
+        tokenizer = AutoTokenizer.from_pretrained(f'{AI_MODELS_PATH}/tmn_bg_en')
+        input_ids = tokenizer.encode((input_text), return_tensors="pt")
+        output_decoded = self.bg_en_model.generate(input_ids)
+        output_text = tokenizer.decode(output_decoded[0], skip_special_tokens=True)
+        print("Bulgurain -> English Model working.")
+        return output_text
