@@ -59,6 +59,16 @@ class AIController:
     mk_en_model = AutoModelForSeq2SeqLM.from_pretrained(f'{AI_MODELS_PATH}/tmn_mk_en')
     en_mk_model = AutoModelForSeq2SeqLM.from_pretrained(f'{AI_MODELS_PATH}/tmn_en_mk')
 
+    cy_en_model = AutoModelForSeq2SeqLM.from_pretrained(f'{AI_MODELS_PATH}/tmn_cy_en')
+    en_cy_model = AutoModelForSeq2SeqLM.from_pretrained(f'{AI_MODELS_PATH}/tmn_en_cy')
+
+    et_en_model = AutoModelForSeq2SeqLM.from_pretrained(f'{AI_MODELS_PATH}/tmn_et_en')
+    en_et_model = AutoModelForSeq2SeqLM.from_pretrained(f'{AI_MODELS_PATH}/tmn_en_et')
+
+    eu_en_model = AutoModelForSeq2SeqLM.from_pretrained(f'{AI_MODELS_PATH}/tmn_eu_en')
+    en_eu_model = AutoModelForSeq2SeqLM.from_pretrained(f'{AI_MODELS_PATH}/tmn_en_eu')
+
+
     # Libra model
     en_zh = ""
     zh_en = ""
@@ -207,6 +217,15 @@ class AIController:
 
             "translate.mk_en": self.translate_mk_en,
             "translate.en_mk": self.translate_en_mk,
+
+            "translate.cy_en": self.translate_cy_en,
+            "translate.en_cy": self.translate_en_cy,
+
+            "translate.et_en": self.translate_et_en,
+            "translate.en_et": self.translate_en_et,
+
+            "translate.eu_en": self.translate_eu_en,
+            "translate.en_eu": self.translate_en_eu,
         }
 
     def translate_en_es(self, input_text):
@@ -967,4 +986,56 @@ class AIController:
         output_text = tokenizer.decode(output_decoded[0], skip_special_tokens=True)
         print("Macedonian -> English Model working.")
         return output_text
+
+    # For Cy:
+    def translate_en_cy(self, input_text):
+        tokenizer = AutoTokenizer.from_pretrained(f'{AI_MODELS_PATH}/tmn_en_cy')
+        input_ids = tokenizer.encode((input_text), return_tensors="pt")
+        output_decoded = self.en_cy_model.generate(input_ids)
+        output_text = tokenizer.decode(output_decoded[0], skip_special_tokens=True)
+        print("English -> Welish Model working.")
+        return output_text
+
+    def translate_cy_en(self, input_text):
+        tokenizer = AutoTokenizer.from_pretrained(f'{AI_MODELS_PATH}/tmn_cy_en')
+        input_ids = tokenizer.encode((input_text), return_tensors="pt")
+        output_decoded = self.cy_en_model.generate(input_ids)
+        output_text = tokenizer.decode(output_decoded[0], skip_special_tokens=True)
+        print("Welish -> English Model working.")
+        return output_text
+
+    # For et:
+    def translate_en_et(self, input_text):
+        tokenizer = AutoTokenizer.from_pretrained(f'{AI_MODELS_PATH}/tmn_en_et')
+        input_ids = tokenizer.encode((input_text), return_tensors="pt")
+        output_decoded = self.en_et_model.generate(input_ids)
+        output_text = tokenizer.decode(output_decoded[0], skip_special_tokens=True)
+        print("English -> Estonian Model working.")
+        return output_text
+
+    def translate_et_en(self, input_text):
+        tokenizer = AutoTokenizer.from_pretrained(f'{AI_MODELS_PATH}/tmn_et_en')
+        input_ids = tokenizer.encode((input_text), return_tensors="pt")
+        output_decoded = self.et_en_model.generate(input_ids)
+        output_text = tokenizer.decode(output_decoded[0], skip_special_tokens=True)
+        print("Estonian -> English Model working.")
+        return output_text
+
+    # For Basque (eu):
+    def translate_en_eu(self, input_text):
+        tokenizer = AutoTokenizer.from_pretrained(f'{AI_MODELS_PATH}/tmn_en_eu')
+        input_ids = tokenizer.encode((input_text), return_tensors="pt")
+        output_decoded = self.en_eu_model.generate(input_ids)
+        output_text = tokenizer.decode(output_decoded[0], skip_special_tokens=True)
+        print("English -> Basque Model working.")
+        return output_text
+
+    def translate_eu_en(self, input_text):
+        tokenizer = AutoTokenizer.from_pretrained(f'{AI_MODELS_PATH}/tmn_eu_en')
+        input_ids = tokenizer.encode((input_text), return_tensors="pt")
+        output_decoded = self.eu_en_model.generate(input_ids)
+        output_text = tokenizer.decode(output_decoded[0], skip_special_tokens=True)
+        print("Basque -> English Model working.")
+        return output_text
+
 
